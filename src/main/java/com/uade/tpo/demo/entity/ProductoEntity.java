@@ -23,13 +23,12 @@ public class ProductoEntity {
     private String name;
     private BigDecimal price;
     private String description;
-    @ManyToOne
-    @JoinColumn(referencedColumnName = "id")
-    private StockAndType stock;
 
-    private SexEnum sex;
-
-    @ManyToOne
+    @OneToMany
     @JoinColumn(referencedColumnName = "id")
-    private ImageEntity image;
+    private List<StockAndType> stock;
+
+    @OneToMany
+    @JoinColumn(referencedColumnName = "id")
+    private List<ImageEntity> image;
 }

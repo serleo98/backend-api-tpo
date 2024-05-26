@@ -1,9 +1,6 @@
 package com.uade.tpo.demo.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
 
@@ -24,5 +21,8 @@ public class StockAndType {
     private String name;
     private String type;
     private String color;
+
+    @Enumerated(EnumType.STRING)
+    private SexEnum sex;
     private Integer quantity;
 }
