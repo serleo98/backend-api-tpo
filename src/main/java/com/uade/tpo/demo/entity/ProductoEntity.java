@@ -19,6 +19,8 @@ public class ProductoEntity {
     private String brand;
     private String category;
     private String name;
+    @Enumerated(EnumType.STRING)
+    private ProductStatus status;
     private BigDecimal price;
     private String description;
     @ManyToOne
@@ -26,7 +28,6 @@ public class ProductoEntity {
     private StockAndType stock;
 
     private SexEnum sex;
-
 
     @ManyToOne
     @JoinColumn(referencedColumnName = "id")
