@@ -1,6 +1,8 @@
 package com.uade.tpo.demo.controller;
 
 import com.uade.tpo.demo.entity.dto.TestDTO;
+import com.uade.tpo.demo.entity.dto.ImagenDTO;
+
 import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +39,15 @@ public class ExampleController {
     public ResponseEntity postConBodyYQueryParam(@RequestBody TestDTO body, @RequestParam String variable) {
 
         log.info(variable);
+        log.info(body.toString());
+
+        return ResponseEntity.ok(body);
+    }
+
+    @PostMapping("/imagen")
+    public ResponseEntity saveImagenes(@RequestBody ImagenDTO body) {
+
+        
         log.info(body.toString());
 
         return ResponseEntity.ok(body);

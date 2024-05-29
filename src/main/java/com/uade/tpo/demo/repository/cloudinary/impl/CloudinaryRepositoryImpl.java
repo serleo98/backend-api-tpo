@@ -19,7 +19,7 @@ public class CloudinaryRepositoryImpl implements CloudinaryRepository {
     @Override
     public String savePhoto(String fileName, MultipartFile file) {
         Map params = ObjectUtils.asMap(
-                "public_id", "myfolder/mysubfolder/my_dog",
+                "public_id", "ecommerce",
                 "overwrite", true,
                 "resource_type", "image"
         );
