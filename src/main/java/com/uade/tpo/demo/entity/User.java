@@ -9,13 +9,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Collection;
+import java.util.List;
+
 @Builder
 @Data
 @Entity
 @Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserEntity {
+public class User {
 
     @Id
     @GeneratedValue

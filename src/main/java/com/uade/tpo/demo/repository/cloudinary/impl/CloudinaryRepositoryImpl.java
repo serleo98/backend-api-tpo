@@ -7,7 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.Map;
 
 @Service
@@ -27,7 +30,7 @@ public class CloudinaryRepositoryImpl implements CloudinaryRepository {
         Map uploadResult = null;
 
         try {
-            uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+            uploadResult = cloudinary.uploader().upload(convertMultipartFileToBase64(file), ObjectUtils.emptyMap());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -40,4 +43,10 @@ public class CloudinaryRepositoryImpl implements CloudinaryRepository {
     public void delete() {
 
     }
+    public String convertMultipartFileToBase64(MultipartFile file) throws IOException {
+        byte[] fileContent = file.getBytes();
+        String encodedString = Base64.getEncoder().encodeToString(fileContent);
+        return encodedString;
+    }
+
 }

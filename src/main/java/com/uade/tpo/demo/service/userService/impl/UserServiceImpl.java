@@ -1,6 +1,6 @@
 package com.uade.tpo.demo.service.userService.impl;
 
-import com.uade.tpo.demo.entity.UserEntity;
+import com.uade.tpo.demo.entity.User;
 import com.uade.tpo.demo.entity.dto.LoginPBDTO;
 import com.uade.tpo.demo.entity.dto.NewUserPBDTO;
 import com.uade.tpo.demo.entity.dto.UserDTO;
@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
     public void createUser(UserDTO newUser) {
 
-        Optional<UserEntity> userEntity = userRepository.findByEmail(newUser.getEmail());
+        Optional<User> userEntity = userRepository.findByEmail(newUser.getEmail());
 
         if(userEntity.isEmpty()){
 
@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
                     .emailVisibility(true)
                     .build();
 
-            UserEntity userToSave = UserEntity.builder()
+            User userToSave = User.builder()
                     .email(newUser.getEmail())
                     .name(newUser.getName())
                     .phone(newUser.getPhone())

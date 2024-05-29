@@ -15,7 +15,7 @@ public class ProductoEntity {
 
     @ManyToOne
     @JoinColumn(referencedColumnName = "id")
-    private UserEntity publisherId;
+    private User publisherId;
     private String brand;
     private String category;
     private String name;
