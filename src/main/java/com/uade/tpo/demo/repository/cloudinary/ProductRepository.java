@@ -1,13 +1,11 @@
 package com.uade.tpo.demo.repository.cloudinary;
 
-
-
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import com.uade.tpo.demo.service.Product;
-
 import lombok.Data;
+
+
 
 @Data
 public class ProductRepository { //TODO: Conectar con el motor de base de datos
