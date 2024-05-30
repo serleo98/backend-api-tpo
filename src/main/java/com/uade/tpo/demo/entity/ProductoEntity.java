@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.List;
 
 @Data
@@ -17,7 +16,7 @@ public class ProductoEntity {
 
     @ManyToOne
     @JoinColumn(referencedColumnName = "id")
-    private UserEntity publisherId;
+    private User publisherId;
     private String brand;
     private String category;
     private String name;
