@@ -3,7 +3,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.GeneratedValue;
 import lombok.Data;
@@ -22,10 +21,6 @@ public class TransactionEntity {
     private Long id;
     private Date date;
 
-    @OneToOne
-    @JoinColumn(referencedColumnName = "id")
-    private CartEntity cart;
-
     @ManyToOne
     @JoinColumn(referencedColumnName = "id")
     private User buyer;
@@ -40,10 +35,6 @@ public class TransactionEntity {
 
     public Date getDate(){
         return date;
-    }
-
-    public Long getCartId(){
-        return cart.getId();
     }
 
     public int getBuyerId(){

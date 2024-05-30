@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.TaskRejectedException;
 import org.springframework.stereotype.Service;
-
-import com.uade.tpo.demo.entity.CartEntity;
+import com.uade.tpo.demo.entity.ProductoEntity;
 import com.uade.tpo.demo.entity.TransactionEntity;
 import com.uade.tpo.demo.entity.User;
 import com.uade.tpo.demo.entity.dto.TransactionDTO;
@@ -21,9 +21,18 @@ import lombok.Data;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
+    
     @Autowired
     private TransactionRepository transactionRepository;
 
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private TransactionDetailsRepository transactionDetailsRepository;
 
     public TransactionDTO getTransactionById(Long id) {
         Optional<TransactionEntity> transactionEntity = transactionRepository.findById(id);
@@ -32,7 +41,6 @@ public class TransactionServiceImpl implements TransactionService {
             TransactionDTO transactionDTO = TransactionDTO.builder()
                 .id(transactionEntity.get().getId())
                 .date(transactionEntity.get().getDate())
-                .cartId(transactionEntity.get().getCartId())
                 .buyerId(transactionEntity.get().getBuyerId())
                 .sellerId(transactionEntity.get().getSellerId())
                 .build();
@@ -51,7 +59,6 @@ public class TransactionServiceImpl implements TransactionService {
             TransactionDTO transactionDTO = TransactionDTO.builder()
             .id(t.getId())
             .date(t.getDate())
-            .cartId(t.getCartId())
             .buyerId(t.getBuyerId())
             .sellerId(t.getSellerId())
             .build();
@@ -68,7 +75,6 @@ public class TransactionServiceImpl implements TransactionService {
             TransactionDTO transactionDTO = TransactionDTO.builder()
             .id(t.getId())
             .date(t.getDate())
-            .cartId(t.getCartId())
             .buyerId(t.getBuyerId())
             .sellerId(t.getSellerId())
             .build();
@@ -78,15 +84,45 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public void createTransaction(Date date, CartEntity cart, User buyer, User seller) {
+    public void createTransaction(Date date, List<Integer> productsId, List<Integer> quantities, int buyerId, int sellerId) {
+        
+        // Verificar que las listas de productos y cantidades tengan el mismo tamaño
+        if (productsId.size() != quantities.size()) {
+            throw new IllegalArgumentException("La lista de productos y cantidades debe tener el mismo tamaño");
+        }
+        
+        //busco el comprador y el vendedor
+        User buyer = userRepository.findById(buyerId).orElseThrow(() -> new RuntimeException("Comprador no encontrado"));
+        User seller = userRepository.findById(sellerId).orElseThrow(() -> new RuntimeException("Vendedor no encontrado"));
+        
+        //armo la transaccion, para obtener su id y luego armar los details con este
         TransactionEntity transactionEntity = TransactionEntity.builder()
             .date(date)
-            .cart(cart)
             .buyer(buyer)
             .seller(seller)
             .build();
 
-            transactionRepository.save(transactionEntity);
+        transactionRepository.save(transactionEntity);
+
+
+        //Armo todas las entradas en TransactionDetails
+        for(int i = 0; i < productsId.size(); i++){
+            int productId = productsId.get(i);
+            int quantity = quantities.get(i);
+            ProductoEntity productEntity = productRepository.findById(p);
+            TransactionDetailsEntity transactionDetail = transactionDetail.builder()
+                .transaction(transactionEntity)
+                .product(productEntity)
+                .unitPrice(productEntity.getPrice())
+                .quantity(quantity)
+                .build();
+
+            transactionDetailsRepository.save(transactionDetail);
+        }
+
+
+
+            
     }
     
 }
