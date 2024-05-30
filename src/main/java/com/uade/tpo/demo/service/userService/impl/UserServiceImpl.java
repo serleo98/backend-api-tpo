@@ -12,11 +12,12 @@ import com.uade.tpo.demo.service.userService.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
-
+    
     @Autowired
     private UserRepository userRepository;
 
@@ -58,4 +59,24 @@ public class UserServiceImpl implements UserService {
         return loginPBRepository.execute(email,password).orElseThrow();
     }
 
+    
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @Override
+    public User updateUser(User user) {
+        User existingUser = userRepository.findById(user.getId()).orElse(null);
+
+        if (existingUser != null) {
+            existingUser.setLastname(user.getLastname());
+            existingUser.setName(user.getName());
+            existingUser.setNick(user.getNick());
+            existingUser.setPhone(user.getPhone());
+
+            userRepository.save(existingUser);
+        }
+
+        return existingUser;
+    }
 }
