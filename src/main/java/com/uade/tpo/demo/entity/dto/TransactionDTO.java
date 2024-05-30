@@ -13,6 +13,7 @@ import lombok.Getter;
 public class TransactionDTO {
     private Long id;
     private Date date;
+    private Long cartId;
     private Integer buyerId;
     private Integer sellerId;
 }
