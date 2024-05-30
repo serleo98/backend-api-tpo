@@ -1,10 +1,14 @@
 package com.uade.tpo.demo.controller;
 
 
+import com.uade.tpo.demo.entity.User;
 import com.uade.tpo.demo.entity.dto.UserDTO;
 import com.uade.tpo.demo.repository.cloudinary.CloudinaryRepository;
 import com.uade.tpo.demo.repository.rest.pocketbase.refreshToken.RefreshToken;
+import com.uade.tpo.demo.service.imagenService.ImagenService;
 import com.uade.tpo.demo.service.userService.UserService;
+import com.uade.tpo.demo.utils.AuthUtils;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -26,6 +30,9 @@ public class UserController {
     @Autowired
     private CloudinaryRepository imgRep;
 
+    @Autowired
+    private ImagenService imagenService;
+
     @PostMapping("/login")
     public ResponseEntity login(String username, String password) {
 
@@ -40,10 +47,15 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.SC_CREATED).build();
     }
 
+    @SecurityRequirement(name = "bearer")
     @PostMapping("/refresh")
     public ResponseEntity refresh(@RequestParam String jwt) {
 
+        //TODO: EJEMPLO DE OBTENER LOS DATOS DE LA SESION ACTUAL
+        User currentUser = AuthUtils.getCurrentAuthUser(User.class);
+
         return ResponseEntity.ok(refreshToken.execute(jwt));
+
     }
 
     @PostMapping(value = "/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -51,7 +63,7 @@ public class UserController {
                                     @RequestParam("title") String title) throws Exception {
 
 
-        String url = imgRep.savePhoto(title,imageFile);
+        String url = imagenService.saveImagenes(title,imageFile);
 
         return ResponseEntity.ok(url);
     }

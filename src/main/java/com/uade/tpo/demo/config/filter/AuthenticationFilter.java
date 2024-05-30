@@ -1,5 +1,6 @@
 package com.uade.tpo.demo.config.filter;
 
+import com.uade.tpo.demo.entity.User;
 import com.uade.tpo.demo.entity.dto.LoginPBDTO;
 import com.uade.tpo.demo.repository.db.UserRepository;
 import com.uade.tpo.demo.repository.rest.pocketbase.refreshToken.RefreshToken;
@@ -23,16 +24,15 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 
-//@Component
-//@RequiredArgsConstructor
+@Component
 public class AuthenticationFilter extends OncePerRequestFilter {
 
-    //@Autowired
+    @Autowired
     private RefreshToken refreshToken;
-    //@Autowired
+    @Autowired
     private UserRepository userRepository;
 
-    //@Override
+    @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain)
             throws ServletException, IOException {
@@ -43,12 +43,17 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             if (StringUtils.isNotBlank(jwt) ) {
 
                 Optional<LoginPBDTO> refreshValidation = refreshToken.execute(jwt);
-                //refreshValidation
-                //UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userId, null, new ArrayList<>());
-                //authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                if(refreshValidation.isPresent()){
+                    String userId = refreshValidation.get().getRecord().getId();
+                    Optional<User> userdb=userRepository.findByIdentityId(userId);
+                    if(userdb.isPresent()){
 
-                //SecurityContextHolder.getContext().setAuthentication(authentication);
+                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userdb, null, new ArrayList<>());
+                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    }
+                }
             }
 
         } catch (Exception ex) {

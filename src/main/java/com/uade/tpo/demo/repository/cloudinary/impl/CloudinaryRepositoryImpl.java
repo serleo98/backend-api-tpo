@@ -30,7 +30,7 @@ public class CloudinaryRepositoryImpl implements CloudinaryRepository {
         Map uploadResult = null;
 
         try {
-            uploadResult = cloudinary.uploader().upload(convertMultipartFileToBase64(file), ObjectUtils.emptyMap());
+            uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
 
         } catch (IOException e) {
             e.printStackTrace();
