@@ -13,13 +13,15 @@ import java.util.Map;
 @Service
 public class CloudinaryRepositoryImpl implements CloudinaryRepository {
 
+
+
     @Autowired
     private Cloudinary cloudinary;
 
     @Override
     public String savePhoto(String fileName, MultipartFile file) {
         Map params = ObjectUtils.asMap(
-                "public_id", "ecommerce",
+                "public_id", "myfolder/mysubfolder/my_dog",
                 "overwrite", true,
                 "resource_type", "image"
         );
@@ -27,7 +29,7 @@ public class CloudinaryRepositoryImpl implements CloudinaryRepository {
         Map uploadResult = null;
 
         try {
-            uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+            uploadResult = cloudinary.uploader().upload(file.getBytes(),ObjectUtils.emptyMap());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -40,4 +42,5 @@ public class CloudinaryRepositoryImpl implements CloudinaryRepository {
     public void delete() {
 
     }
+    
 }
