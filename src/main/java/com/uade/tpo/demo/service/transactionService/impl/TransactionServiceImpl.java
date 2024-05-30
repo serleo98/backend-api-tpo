@@ -6,18 +6,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-<<<<<<< HEAD
 import org.springframework.core.task.TaskRejectedException;
 import org.springframework.stereotype.Service;
 import com.uade.tpo.demo.entity.ProductoEntity;
-=======
-import org.springframework.stereotype.Service;
-
-import com.uade.tpo.demo.entity.CartEntity;
->>>>>>> 7eb9df4 (entidad, logica y repos)
 import com.uade.tpo.demo.entity.TransactionEntity;
 import com.uade.tpo.demo.entity.User;
 import com.uade.tpo.demo.entity.dto.TransactionDTO;
+import com.uade.tpo.demo.repository.db.IProductRepository;
 import com.uade.tpo.demo.repository.db.TransactionRepository;
 import com.uade.tpo.demo.repository.db.UserRepository;
 import com.uade.tpo.demo.service.exceptions.TransactionNotFoundException;
@@ -27,24 +22,22 @@ import lombok.Data;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
-<<<<<<< HEAD
+
     
     @Autowired
     private TransactionRepository transactionRepository;
 
     @Autowired
-    private ProductRepository productRepository;
+    private IProductRepository productRepository;
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private TransactionDetailsRepository transactionDetailsRepository;
-=======
-    @Autowired
-    private TransactionRepository transactionRepository;
 
->>>>>>> 7eb9df4 (entidad, logica y repos)
+
+
 
     public TransactionDTO getTransactionById(Long id) {
         Optional<TransactionEntity> transactionEntity = transactionRepository.findById(id);
@@ -53,10 +46,6 @@ public class TransactionServiceImpl implements TransactionService {
             TransactionDTO transactionDTO = TransactionDTO.builder()
                 .id(transactionEntity.get().getId())
                 .date(transactionEntity.get().getDate())
-<<<<<<< HEAD
-=======
-                .cartId(transactionEntity.get().getCartId())
->>>>>>> 7eb9df4 (entidad, logica y repos)
                 .buyerId(transactionEntity.get().getBuyerId())
                 .sellerId(transactionEntity.get().getSellerId())
                 .build();
@@ -75,10 +64,6 @@ public class TransactionServiceImpl implements TransactionService {
             TransactionDTO transactionDTO = TransactionDTO.builder()
             .id(t.getId())
             .date(t.getDate())
-<<<<<<< HEAD
-=======
-            .cartId(t.getCartId())
->>>>>>> 7eb9df4 (entidad, logica y repos)
             .buyerId(t.getBuyerId())
             .sellerId(t.getSellerId())
             .build();
@@ -95,10 +80,6 @@ public class TransactionServiceImpl implements TransactionService {
             TransactionDTO transactionDTO = TransactionDTO.builder()
             .id(t.getId())
             .date(t.getDate())
-<<<<<<< HEAD
-=======
-            .cartId(t.getCartId())
->>>>>>> 7eb9df4 (entidad, logica y repos)
             .buyerId(t.getBuyerId())
             .sellerId(t.getSellerId())
             .build();
@@ -108,7 +89,6 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-<<<<<<< HEAD
     public void createTransaction(Date date, List<Integer> productsId, List<Integer> quantities, int buyerId, int sellerId) {
         
         // Verificar que las listas de productos y cantidades tengan el mismo tamaño
@@ -123,17 +103,10 @@ public class TransactionServiceImpl implements TransactionService {
         //armo la transaccion, para obtener su id y luego armar los details con este
         TransactionEntity transactionEntity = TransactionEntity.builder()
             .date(date)
-=======
-    public void createTransaction(Date date, CartEntity cart, User buyer, User seller) {
-        TransactionEntity transactionEntity = TransactionEntity.builder()
-            .date(date)
-            .cart(cart)
->>>>>>> 7eb9df4 (entidad, logica y repos)
             .buyer(buyer)
             .seller(seller)
             .build();
 
-<<<<<<< HEAD
         transactionRepository.save(transactionEntity);
 
 
@@ -155,9 +128,6 @@ public class TransactionServiceImpl implements TransactionService {
 
 
             
-=======
-            transactionRepository.save(transactionEntity);
->>>>>>> 7eb9df4 (entidad, logica y repos)
     }
     
 }
