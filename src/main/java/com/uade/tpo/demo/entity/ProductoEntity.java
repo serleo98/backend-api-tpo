@@ -32,11 +32,17 @@ public class ProductoEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+<<<<<<< HEAD
     //@ManyToOne
     //@JoinColumn(referencedColumnName = "id")
     //@Column
     //private Integer publisherId;
     @Column
+=======
+    @ManyToOne
+    @JoinColumn(referencedColumnName = "id")
+    private User publisherId;
+>>>>>>> a7923022b0ec509c3e2fbb8b07e0f2e239176c4f
     private String brand;
     @Column
     private String category;
