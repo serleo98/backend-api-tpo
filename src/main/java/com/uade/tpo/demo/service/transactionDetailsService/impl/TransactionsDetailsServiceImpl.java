@@ -1,22 +1,22 @@
 package com.uade.tpo.demo.service.transactionDetailsService.impl;
-
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.uade.tpo.demo.entity.ProductoEntity;
 import com.uade.tpo.demo.entity.TransactionDetailsEntity;
 import com.uade.tpo.demo.entity.TransactionEntity;
-import com.uade.tpo.demo.entity.dto.TransactionDTO;
 import com.uade.tpo.demo.entity.dto.TransactionDetailsDTO;
+import com.uade.tpo.demo.repository.db.IProductRepository;
 import com.uade.tpo.demo.repository.db.TransactionDetailsRepository;
 import com.uade.tpo.demo.repository.db.TransactionRepository;
 import com.uade.tpo.demo.service.exceptions.TransactionNotFoundException;
 import com.uade.tpo.demo.service.transactionDetailsService.TransactionDetailsService;
 
+@Service
 public class TransactionsDetailsServiceImpl implements TransactionDetailsService {
 
     @Autowired
@@ -26,7 +26,7 @@ public class TransactionsDetailsServiceImpl implements TransactionDetailsService
     private TransactionRepository transactionRepository;
 
     @Autowired
-    private ProductRepository productRepository;
+    private IProductRepository productRepository;
 
     public TransactionDetailsDTO getDetailById(Long id) {
         Optional<TransactionDetailsEntity> transactionDetail = transactionsDetailsRepository.findById(id);

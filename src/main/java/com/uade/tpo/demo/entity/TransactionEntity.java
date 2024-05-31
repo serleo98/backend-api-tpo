@@ -7,6 +7,8 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.GeneratedValue;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 
 import java.util.Date;
@@ -18,6 +20,8 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Entity
 @Builder
 @Table(name = "transactions")
+@AllArgsConstructor
+@NoArgsConstructor
 public class TransactionEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -36,6 +40,7 @@ public class TransactionEntity {
     private float totalValue;
 
     @OneToMany
+    @JoinColumn(referencedColumnName = "id")
     private List<TransactionDetailsEntity> details;
 
     public Long getId(){

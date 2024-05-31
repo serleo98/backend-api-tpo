@@ -13,7 +13,6 @@ import com.uade.tpo.demo.entity.ImageEntity;
 import com.uade.tpo.demo.entity.ProductoEntity;
 import com.uade.tpo.demo.entity.StockAndType;
 import com.uade.tpo.demo.entity.User;
-import com.uade.tpo.demo.exceptions.ProductDuplicateExecption;
 import com.uade.tpo.demo.repository.db.IProductRepository;
 import com.uade.tpo.demo.repository.db.IStock;
 
@@ -63,9 +62,7 @@ public class ProductService implements IProductService {
     
     @Transactional(rollbackFor = Throwable.class)
     public ProductoEntity createProduct(User publisherId, String brand, String category, String name,
-    BigDecimal price, String description, List<StockAndType> stock, List<ImageEntity> image) throws ProductDuplicateExecption{
-        List<ProductoEntity> products = productRepository.findByName(name);
-        if (products.isEmpty()) {
+    BigDecimal price, String description, List<StockAndType> stock, List<ImageEntity> image){
             ProductoEntity productBuild = ProductoEntity.builder()
                     .publisherId(publisherId)
                     .brand(brand)
@@ -79,12 +76,9 @@ public class ProductService implements IProductService {
             stockRepository.saveAll(stock);
             productRepository.save(productBuild); //TODO: Guardar stock en base
             return productBuild;
-        }
-        else {
-            throw new ProductDuplicateExecption();
-        }
     }
-    }
+
+}
 
     
 

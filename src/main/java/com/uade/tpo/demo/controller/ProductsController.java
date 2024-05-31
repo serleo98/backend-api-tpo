@@ -4,9 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.uade.tpo.demo.entity.ProductoEntity;
-import com.uade.tpo.demo.entity.User;
 import com.uade.tpo.demo.service.productService.IProductService;
-import com.uade.tpo.demo.utils.AuthUtils;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

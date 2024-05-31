@@ -6,21 +6,19 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.task.TaskRejectedException;
 import org.springframework.stereotype.Service;
 import com.uade.tpo.demo.entity.ProductoEntity;
 import com.uade.tpo.demo.entity.TransactionDetailsEntity;
 import com.uade.tpo.demo.entity.TransactionEntity;
 import com.uade.tpo.demo.entity.User;
 import com.uade.tpo.demo.entity.dto.TransactionDTO;
+import com.uade.tpo.demo.repository.db.IProductRepository;
 import com.uade.tpo.demo.repository.db.TransactionDetailsRepository;
 import com.uade.tpo.demo.repository.db.TransactionRepository;
 import com.uade.tpo.demo.repository.db.UserRepository;
 import com.uade.tpo.demo.service.exceptions.TransactionNotFoundException;
 import com.uade.tpo.demo.service.exceptions.UserNotFoundException;
 import com.uade.tpo.demo.service.transactionService.TransactionService;
-import lombok.Builder;
-import lombok.Data;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
@@ -29,7 +27,7 @@ public class TransactionServiceImpl implements TransactionService {
     private TransactionRepository transactionRepository;
 
     @Autowired
-    private ProductRepository productRepository;
+    private IProductRepository productRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -132,15 +130,15 @@ public class TransactionServiceImpl implements TransactionService {
         for(int i = 0; i < productsId.size(); i++){
             int productId = productsId.get(i);
             int quantity = quantities.get(i);
-            ProductoEntity productEntity = productRepository.findById(productId);
+            Optional<ProductoEntity> productEntity = productRepository.findById(productId);
             TransactionDetailsEntity transactionDetail = TransactionDetailsEntity.builder()
                 .transaction(transactionEntity)
-                .product(productEntity)
-                .unitPrice(productEntity.getPrice())
+                .product(productEntity.get())
+                .unitPrice(productEntity.get().getPrice())
                 .quantity(quantity)
                 .build();
             
-            sum += (productEntity.getPrice().floatValue() * quantity);
+            sum += (productEntity.get().getPrice().floatValue() * quantity);
             transactionDetailsRepository.save(transactionDetail);
             transactionEntity.getDetails().add(transactionDetail);
         }
