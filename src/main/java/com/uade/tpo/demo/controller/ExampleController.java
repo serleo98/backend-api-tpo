@@ -1,7 +1,6 @@
 package com.uade.tpo.demo.controller;
 
 import com.uade.tpo.demo.entity.dto.TestDTO;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

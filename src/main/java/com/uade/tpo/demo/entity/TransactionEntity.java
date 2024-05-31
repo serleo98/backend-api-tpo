@@ -3,18 +3,25 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.GeneratedValue;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 
 import java.util.Date;
+import java.util.List;
+
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Data
 @Entity
 @Builder
 @Table(name = "transactions")
+@AllArgsConstructor
+@NoArgsConstructor
 public class TransactionEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -28,6 +35,13 @@ public class TransactionEntity {
     @ManyToOne
     @JoinColumn(referencedColumnName = "id")
     private User seller;
+    private float saleValue;
+    private float discount;
+    private float totalValue;
+
+    @OneToMany
+    @JoinColumn(referencedColumnName = "id")
+    private List<TransactionDetailsEntity> details;
 
     public Long getId(){
         return id;
@@ -37,12 +51,23 @@ public class TransactionEntity {
         return date;
     }
 
-    public int getBuyerId(){
-        return buyer.getId();
+    public String getBuyerId(){
+        return buyer.getIdentityId();
     }
 
-    public int getSellerId(){
-        return seller.getId();
+    public String getSellerId(){
+        return seller.getIdentityId();
+    }
+    public float getSaleValue(){
+        return saleValue;
+    }
+
+    public float getDiscount(){
+        return discount;
+    }
+
+    public float getTotalValue(){
+        return totalValue;
     }
 
 }
