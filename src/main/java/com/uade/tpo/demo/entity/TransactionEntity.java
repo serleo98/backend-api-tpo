@@ -15,8 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
-@Getter
-@Setter
+
 @Data
 @Entity
 @Builder
@@ -44,6 +43,31 @@ public class TransactionEntity {
     @JoinColumn(referencedColumnName = "id")
     private List<TransactionDetailsEntity> details;
 
-   
+    public Long getId(){
+        return id;
+    }
+
+    public Date getDate(){
+        return date;
+    }
+
+    public String getBuyerId(){
+        return buyer.getIdentityId();
+    }
+
+    public String getSellerId(){
+        return seller.getIdentityId();
+    }
+    public float getSaleValue(){
+        return saleValue;
+    }
+
+    public float getDiscount(){
+        return discount;
+    }
+
+    public float getTotalValue(){
+        return totalValue;
+    }
 
 }
