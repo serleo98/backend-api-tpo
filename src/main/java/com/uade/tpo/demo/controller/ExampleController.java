@@ -40,5 +40,59 @@ public class ExampleController {
 
         return ResponseEntity.ok(body);
     }
+    @PostMapping(value = "/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity saveImagenesToProducto(@RequestPart("imageFile") MultipartFile imageFile,
+                                    @RequestParam("id") Integer id, @RequestParam("productName") String productName) throws Exception {
+        Optional<ProductoEntity> productOpt = productService.getProductById(id);
 
+        if (productOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Producto no encontrado");
+            }
+
+        String url = imagenService.saveImagenes(productName,imageFile);
+        
+
+        ProductoEntity product = productOpt.get();
+
+        ImageEntity imageEntity = new ImageEntity();
+        imageEntity.setUrl(url);
+
+        List<ImageEntity> images = product.getImage();
+        images.add(imageEntity);
+        
+        imagenRepository.saveAndFlush(imageEntity);
+        
+        product.setImage(images);
+        
+        productRepository.saveAndFlush(product);
+        
+        return ResponseEntity.ok(url);
+    }
+
+    @PostMapping(value = "/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> saveImagenesToUser(@RequestPart("imageFile") MultipartFile imageFile,
+                                                @RequestParam("id") Integer id, @RequestParam("userName") String userName) throws Exception {
+        Integer userOpt = userService.getUserById(id);
+        
+        if (userRepository.existsById(id)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado");
+        }
+
+        String url = imagenService.saveImagenes(userName, imageFile);
+        
+        User user = userRepository.getById(id);
+
+        ImageEntity imageEntity = new ImageEntity();
+        imageEntity.setUrl(url);
+
+        
+        imagenRepository.saveAndFlush(imageEntity);
+
+        user.setImage(imageEntity);
+        
+        userRepository.saveAndFlush(user);
+
+
+        return ResponseEntity.ok(url);
+    }
 }
