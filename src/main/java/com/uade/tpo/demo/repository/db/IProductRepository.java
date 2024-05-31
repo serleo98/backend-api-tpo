@@ -1,4 +1,4 @@
-package com.uade.tpo.demo.repository;
+package com.uade.tpo.demo.repository.db;
 
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;

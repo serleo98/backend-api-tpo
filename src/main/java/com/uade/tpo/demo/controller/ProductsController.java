@@ -4,7 +4,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.uade.tpo.demo.entity.ProductoEntity;
-import com.uade.tpo.demo.service.IProductService;
+import com.uade.tpo.demo.entity.User;
+import com.uade.tpo.demo.service.productService.IProductService;
+import com.uade.tpo.demo.utils.AuthUtils;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import java.net.URI;
@@ -38,13 +41,13 @@ public class ProductsController {
         Optional<ProductoEntity> result = productService.getProductById(productId);
         if (result.isPresent())
             return ResponseEntity.ok(result.get());
-        
+
         return ResponseEntity.noContent().build();
     }
 
 
     @PostMapping("/create")
-    public ResponseEntity<ProductoEntity> createProduct(@RequestBody ProductoEntity productRequest) throws Exception{
+    public ResponseEntity<ProductoEntity> createProduct(@RequestBody ProductoEntity productRequest) throws Exception {
     ProductoEntity result = productService.createProduct(productRequest.getPublisherId(), productRequest.getBrand(), productRequest.getCategory(), productRequest.getName(), productRequest.getPrice(), productRequest.getDescription(), productRequest.getStock(), productRequest.getImage());
     return ResponseEntity.created(URI.create("/products/" + result.getId())).body(result);
 }
