@@ -7,9 +7,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 import com.uade.tpo.demo.entity.dto.ProductDTO;
+import com.uade.tpo.demo.entity.dto.ProductToModifiDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -102,6 +104,49 @@ public class ProductService implements IProductService {
             throw new UserNotFoundException("Publisher not found");
         }
 
+    }
+
+    @Override
+    public ProductoEntity modifiProduct(ProductToModifiDTO productToModifiDTO) throws Exception {
+        Optional<ProductoEntity> productdb = productRepository.findById(productToModifiDTO.getId());
+
+        if (!productdb.isPresent()) {
+            throw new ProductNotFoundException("Product with id: " + productToModifiDTO.getId() + " not found");
+        }
+
+        ProductoEntity productEntity = productdb.get();
+
+        if (productToModifiDTO.getBrand() != null) {
+            productEntity.setBrand(productToModifiDTO.getBrand());
+        }
+
+        if (productToModifiDTO.getCategory() != null) {
+            productEntity.setCategory(productToModifiDTO.getCategory());
+        }
+
+        if (productToModifiDTO.getName() != null) {
+            productEntity.setName(productToModifiDTO.getName());
+        }
+
+        if (productToModifiDTO.getPrice() != null) {
+            productEntity.setPrice(productToModifiDTO.getPrice());
+        }
+
+        if (productToModifiDTO.getDescription() != null) {
+            productEntity.setDescription(productToModifiDTO.getDescription());
+        }
+
+        if (productToModifiDTO.getStock() != null) {
+            // Assuming that you have a method to convert StockAndTypeDto to StockAndType
+            List<StockAndType> stock = productToModifiDTO.getStock().stream()
+                    .map(StockAndType::fromDto)
+                    .collect(Collectors.toList());
+            productEntity.setStock(stock);
+        }
+
+        productRepository.save(productEntity);
+
+        return productEntity;
     }
 
     @Override

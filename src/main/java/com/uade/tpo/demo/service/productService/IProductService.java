@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.uade.tpo.demo.entity.dto.ProductDTO;
+import com.uade.tpo.demo.entity.dto.ProductToModifiDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import com.uade.tpo.demo.entity.ImageEntity;
@@ -17,6 +18,9 @@ public interface IProductService {
     public Optional<ProductoEntity> getProductById(Integer productId);
     
     public ProductoEntity createProduct(ProductDTO productDTO)
+            throws Exception;
+
+    public ProductoEntity modifiProduct(ProductToModifiDTO productToModifiDTO)
             throws Exception;
     
     public void purchaseProducts(List<Integer> ids, List<StockAndType> stocks, List<Integer> quantities, Integer buyerId, Integer sellerId, float discount);

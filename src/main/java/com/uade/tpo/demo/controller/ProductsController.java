@@ -1,16 +1,13 @@
 package com.uade.tpo.demo.controller;
 
 import com.uade.tpo.demo.entity.dto.ProductDTO;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import com.uade.tpo.demo.entity.dto.ProductToModifiDTO;
+import org.springframework.web.bind.annotation.*;
 import com.uade.tpo.demo.entity.ProductoEntity;
 import com.uade.tpo.demo.entity.StockAndType;
 import com.uade.tpo.demo.repository.db.IStock;
 import com.uade.tpo.demo.service.exceptions.StockNotFoundException;
 import com.uade.tpo.demo.service.productService.IProductService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigDecimal;
 import java.net.URI;
@@ -21,8 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 
 @RestController
@@ -54,11 +49,18 @@ public class ProductsController {
         return ResponseEntity.noContent().build();
     }
 
-
     @PostMapping("/create")
     public ResponseEntity<ProductoEntity> createProduct(@RequestBody ProductDTO productRequest) throws Exception {
 
         ProductoEntity result = productService.createProduct(productRequest);
+
+        return ResponseEntity.created(URI.create("/products/" + result.getId())).body(result);
+    }
+
+    @PutMapping("/modify")
+    public ResponseEntity<ProductoEntity> modifiProduct(@RequestBody ProductToModifiDTO productToModifiDTO) throws Exception {
+
+        ProductoEntity result = productService.modifiProduct(productToModifiDTO);
 
         return ResponseEntity.created(URI.create("/products/" + result.getId())).body(result);
     }
