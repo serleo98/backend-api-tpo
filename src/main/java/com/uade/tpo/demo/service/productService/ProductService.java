@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.uade.tpo.demo.Exceptions.ProductDuplicateException;
 import com.uade.tpo.demo.entity.ImageEntity;
 import com.uade.tpo.demo.entity.ProductoEntity;
 import com.uade.tpo.demo.entity.StockAndType;
@@ -63,7 +64,7 @@ public class ProductService implements IProductService {
     
     @Transactional(rollbackFor = Throwable.class)
     public ProductoEntity createProduct(User publisherId, String brand, String category, String name,
-    BigDecimal price, String description, List<StockAndType> stock, List<ImageEntity> image) throws ProductDuplicateExecption{
+    BigDecimal price, String description, List<StockAndType> stock, List<ImageEntity> image) throws ProductDuplicateException{
         List<ProductoEntity> products = productRepository.findByName(name);
         if (products.isEmpty()) {
             ProductoEntity productBuild = ProductoEntity.builder()
@@ -81,8 +82,24 @@ public class ProductService implements IProductService {
             return productBuild;
         }
         else {
-            throw new ProductDuplicateExecption();
+            throw new ProductDuplicateException();
         }
+    }
+
+    public ProductoEntity updateProduct(ProductoEntity product) {
+        ProductoEntity existingProduct = productRepository.findById(product.getId()).orElse(null);
+
+        if (existingProduct != null) {
+            existingProduct.setBrand(product.getBrand());
+            existingProduct.setCategory(product.getCategory());
+            existingProduct.setDescription(product.getDescription());
+            existingProduct.setName(product.getName());
+            existingProduct.setPrice(product.getPrice());
+
+            productRepository.save(existingProduct);
+        }
+
+        return existingProduct;
     }
     }
 

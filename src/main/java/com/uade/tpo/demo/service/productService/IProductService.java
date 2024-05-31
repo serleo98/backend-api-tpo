@@ -19,4 +19,6 @@ public interface IProductService {
             BigDecimal price, String description, List<StockAndType> stock, List<ImageEntity> image)
             throws Exception;
 
+    public ProductoEntity updateProduct(ProductoEntity product);
+
 } 

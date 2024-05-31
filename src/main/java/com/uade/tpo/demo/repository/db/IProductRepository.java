@@ -15,6 +15,6 @@ public interface IProductRepository extends JpaRepository<ProductoEntity, Intege
 
     //@Query(value = "")
     //Integer findStock(ProductoEntity product);
-       
+
 } 
 
