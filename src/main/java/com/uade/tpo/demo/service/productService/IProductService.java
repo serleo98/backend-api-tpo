@@ -18,5 +18,14 @@ public interface IProductService {
     public ProductoEntity createProduct(User publisherId, String brand, String category, String name,
             BigDecimal price, String description, List<StockAndType> stock, List<ImageEntity> image)
             throws Exception;
+    
+    public void purchaseProduct(Integer id, StockAndType stock);
+
+    public List<ProductoEntity> getProductsBySellerId(Integer userId);
+
+    public List<ProductoEntity> getProductsWithStock();
+
+    public List<ProductoEntity> getProductsFiltered(String brand, String category, String name, BigDecimal minPrice, BigDecimal maxPrice);
+        
 
 } 
