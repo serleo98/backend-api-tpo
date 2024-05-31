@@ -19,7 +19,7 @@ public interface IProductService {
             BigDecimal price, String description, List<StockAndType> stock, List<ImageEntity> image)
             throws Exception;
     
-    public void purchaseProduct(Integer id, StockAndType stock);
+    public void purchaseProducts(List<Integer> ids, List<StockAndType> stocks, List<Integer> quantities, Integer buyerId, Integer sellerId, float discount);
 
     public List<ProductoEntity> getProductsBySellerId(Integer userId);
 
