@@ -13,6 +13,8 @@ import java.util.Map;
 @Service
 public class CloudinaryRepositoryImpl implements CloudinaryRepository {
 
+
+
     @Autowired
     private Cloudinary cloudinary;
 
@@ -27,7 +29,7 @@ public class CloudinaryRepositoryImpl implements CloudinaryRepository {
         Map uploadResult = null;
 
         try {
-            uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+            uploadResult = cloudinary.uploader().upload(file.getBytes(),ObjectUtils.emptyMap());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -40,4 +42,5 @@ public class CloudinaryRepositoryImpl implements CloudinaryRepository {
     public void delete() {
 
     }
+    
 }
