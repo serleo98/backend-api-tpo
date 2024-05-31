@@ -4,13 +4,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.uade.tpo.demo.entity.ProductoEntity;
+import com.uade.tpo.demo.entity.StockAndType;
 import com.uade.tpo.demo.entity.User;
+import com.uade.tpo.demo.repository.db.IProductRepository;
+import com.uade.tpo.demo.repository.db.IStock;
+import com.uade.tpo.demo.service.exceptions.StockNotFoundException;
 import com.uade.tpo.demo.service.productService.IProductService;
 import com.uade.tpo.demo.utils.AuthUtils;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.math.BigDecimal;
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,6 +33,10 @@ public class ProductsController {
 
     @Autowired
     private IProductService productService;
+
+    @Autowired
+    private IStock stockRepository;
+
 
     @GetMapping
     public ResponseEntity<Page<ProductoEntity>> getProducts(
@@ -50,6 +61,32 @@ public class ProductsController {
     public ResponseEntity<ProductoEntity> createProduct(@RequestBody ProductoEntity productRequest) throws Exception {
     ProductoEntity result = productService.createProduct(productRequest.getPublisherId(), productRequest.getBrand(), productRequest.getCategory(), productRequest.getName(), productRequest.getPrice(), productRequest.getDescription(), productRequest.getStock(), productRequest.getImage());
     return ResponseEntity.created(URI.create("/products/" + result.getId())).body(result);
-}
+    }
+
+    @GetMapping("/stocked")
+    public List<ProductoEntity> getStockedProducts() {
+        return productService.getProductsWithStock();
+    }
+
+    @GetMapping("/seller{id}")
+    public List<ProductoEntity> getProductsBySellerID(Integer id) {
+        return productService.getProductsBySellerId(id);
+    }
+
+    @GetMapping("/filtered")
+    public List<ProductoEntity> getProductsFiltered(String brand, String category, String name, BigDecimal minPrice, BigDecimal maxPrice){
+        //params in null if none
+        return productService.getProductsFiltered(brand, category, name, minPrice, maxPrice);
+    }
+
+    public void purchaseProduct(Integer productId, Integer stockId){
+        Optional<StockAndType> stock = stockRepository.findById(stockId);
+        if(!stock.isEmpty()){
+            productService.purchaseProduct(productId, stock.get());
+        }
+        else{
+            throw new StockNotFoundException("Stock with id: " + stockId + " not found");
+        }
+    }
     
 }
