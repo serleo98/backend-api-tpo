@@ -9,11 +9,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.uade.tpo.demo.Exceptions.ProductDuplicateExecption;
 import com.uade.tpo.demo.entity.ImageEntity;
 import com.uade.tpo.demo.entity.ProductoEntity;
 import com.uade.tpo.demo.entity.StockAndType;
 import com.uade.tpo.demo.entity.User;
-import com.uade.tpo.demo.exceptions.ProductDuplicateExecption;
 import com.uade.tpo.demo.repository.db.IProductRepository;
 import com.uade.tpo.demo.repository.db.IStock;
 

@@ -58,4 +58,9 @@ public class UserServiceImpl implements UserService {
         return loginPBRepository.execute(email,password).orElseThrow();
     }
 
+    @Override
+    public Optional<User> getUserById(Integer userId) {
+        return userRepository.findById(userId);
+    }
+
 }

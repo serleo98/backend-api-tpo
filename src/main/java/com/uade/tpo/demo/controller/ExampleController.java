@@ -7,6 +7,7 @@ import com.uade.tpo.demo.repository.db.IImageRepository;
 import com.uade.tpo.demo.repository.db.IProductRepository;
 import com.uade.tpo.demo.service.imagenService.imagenService;
 import com.uade.tpo.demo.service.productService.IProductService;
+import com.uade.tpo.demo.service.userService.UserService;
 
 import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -35,7 +37,11 @@ public class ExampleController {
     @Autowired
     private IImageRepository imagenRepository;
 
-    
+    @Autowired
+    private IProductRepository productRepository;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/ping")
     public ResponseEntity ping() {
@@ -90,7 +96,14 @@ public class ExampleController {
         
         product.setImage(images);
         
+        productRepository.saveAndFlush(product);
         
         return ResponseEntity.ok(url);
     }
+
+
+    
+
+
+
 }
