@@ -13,6 +13,9 @@ import lombok.Getter;
 public class TransactionDTO {
     private Long id;
     private Date date;
-    private Integer buyerId;
-    private Integer sellerId;
+    private String buyerId;
+    private String sellerId;
+    private float saleValue;
+    private float discount;
+    private float totalValue;
 }

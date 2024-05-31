@@ -32,6 +32,10 @@ public class User implements UserDetails {
     private String phone;
     private String identityId;
 
+
+    public String getIdentityId(){
+        return identityId;
+    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();

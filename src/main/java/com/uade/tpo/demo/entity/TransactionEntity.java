@@ -28,6 +28,9 @@ public class TransactionEntity {
     @ManyToOne
     @JoinColumn(referencedColumnName = "id")
     private User seller;
+    private float saleValue;
+    private float discount;
+    private float totalValue;
 
     public Long getId(){
         return id;
@@ -37,12 +40,23 @@ public class TransactionEntity {
         return date;
     }
 
-    public int getBuyerId(){
-        return buyer.getId();
+    public String getBuyerId(){
+        return buyer.getIdentityId();
     }
 
-    public int getSellerId(){
-        return seller.getId();
+    public String getSellerId(){
+        return seller.getIdentityId();
+    }
+    public float getSaleValue(){
+        return saleValue;
+    }
+
+    public float getDiscount(){
+        return discount;
+    }
+
+    public float getTotalValue(){
+        return totalValue;
     }
 
 }
