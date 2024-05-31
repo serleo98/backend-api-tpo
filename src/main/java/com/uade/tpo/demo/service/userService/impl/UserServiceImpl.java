@@ -58,4 +58,18 @@ public class UserServiceImpl implements UserService {
         return loginPBRepository.execute(email,password).orElseThrow();
     }
 
+    public User updateUser(User user) {
+        User existingUser = userRepository.findById(user.getId()).orElse(null);
+
+        if (existingUser != null) {
+            existingUser.setLastname(user.getLastname());
+            existingUser.setName(user.getName());
+            existingUser.setNick(user.getNick());
+            existingUser.setPhone(user.getPhone());
+
+            userRepository.save(existingUser);
+        }
+
+        return existingUser;
+    }
 }
