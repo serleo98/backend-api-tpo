@@ -3,6 +3,8 @@ package com.uade.tpo.demo.service.productService;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+
+import com.uade.tpo.demo.entity.dto.ProductDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import com.uade.tpo.demo.entity.ImageEntity;
@@ -14,8 +16,7 @@ public interface IProductService {
 
     public Optional<ProductoEntity> getProductById(Integer productId);
     
-    public ProductoEntity createProduct(Integer publisherId, String brand, String category, String name,
-            BigDecimal price, String description, List<StockAndType> stock, List<ImageEntity> image)
+    public ProductoEntity createProduct(ProductDTO productDTO)
             throws Exception;
     
     public void purchaseProducts(List<Integer> ids, List<StockAndType> stocks, List<Integer> quantities, Integer buyerId, Integer sellerId, float discount);

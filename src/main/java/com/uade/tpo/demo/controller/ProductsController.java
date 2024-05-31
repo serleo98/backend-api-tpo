@@ -1,5 +1,6 @@
 package com.uade.tpo.demo.controller;
 
+import com.uade.tpo.demo.entity.dto.ProductDTO;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +16,7 @@ import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,12 +38,12 @@ public class ProductsController {
 
     @GetMapping
     public ResponseEntity<Page<ProductoEntity>> getProducts(
-        @RequestParam(required = false) Integer page,
-        @RequestParam(required = false) Integer size) {
-    if (page == null || size == null)
-        return ResponseEntity.ok(productService.getProducts(PageRequest.of(0, Integer.MAX_VALUE)));
-    return ResponseEntity.ok(productService.getProducts(PageRequest.of(page, size)));
-}
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
+        if (page == null || size == null)
+            return ResponseEntity.ok(productService.getProducts(PageRequest.of(0, Integer.MAX_VALUE)));
+        return ResponseEntity.ok(productService.getProducts(PageRequest.of(page, size)));
+    }
 
     @GetMapping("/{productId}")
     public ResponseEntity<ProductoEntity> getProductById(@PathVariable Integer productId) {
@@ -54,9 +56,11 @@ public class ProductsController {
 
 
     @PostMapping("/create")
-    public ResponseEntity<ProductoEntity> createProduct(@RequestBody ProductoEntity productRequest) throws Exception {
-    ProductoEntity result = productService.createProduct(productRequest.getPublisherId().getId(), productRequest.getBrand(), productRequest.getCategory(), productRequest.getName(), productRequest.getPrice(), productRequest.getDescription(), productRequest.getStock(), productRequest.getImage());
-    return ResponseEntity.created(URI.create("/products/" + result.getId())).body(result);
+    public ResponseEntity<ProductoEntity> createProduct(@RequestBody ProductDTO productRequest) throws Exception {
+
+        ProductoEntity result = productService.createProduct(productRequest);
+
+        return ResponseEntity.created(URI.create("/products/" + result.getId())).body(result);
     }
 
     @GetMapping("/stocked")
@@ -70,19 +74,18 @@ public class ProductsController {
     }
 
     @GetMapping("/filtered")
-    public List<ProductoEntity> getProductsFiltered(String brand, String category, String name, BigDecimal minPrice, BigDecimal maxPrice){
+    public List<ProductoEntity> getProductsFiltered(String brand, String category, String name, BigDecimal minPrice, BigDecimal maxPrice) {
         //params in null if none
         return productService.getProductsFiltered(brand, category, name, minPrice, maxPrice);
     }
 
-    public void purchaseProducts(List<Integer> productIds, List<Integer> stockIds, List<Integer> quantities, Integer buyerId, Integer sellerId, float discount){
+    public void purchaseProducts(List<Integer> productIds, List<Integer> stockIds, List<Integer> quantities, Integer buyerId, Integer sellerId, float discount) {
         List<StockAndType> stocks = stockRepository.findAllById(stockIds);
-        if(!stocks.isEmpty()){
+        if (!stocks.isEmpty()) {
             productService.purchaseProducts(productIds, stocks, quantities, buyerId, sellerId, discount);
-        }
-        else{
+        } else {
             throw new StockNotFoundException("Stocks not found");
         }
     }
-    
+
 }
