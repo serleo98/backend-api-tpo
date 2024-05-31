@@ -1,32 +1,75 @@
 package com.uade.tpo.demo.service;
 
-import java.util.ArrayList;
-
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
-import com.uade.tpo.demo.repository.cloudinary.ProductRepository;
-
+import org.springframework.transaction.annotation.Transactional;
+import com.uade.tpo.demo.Exceptions.ProductDuplicateExecption;
+import com.uade.tpo.demo.entity.ImageEntity;
+import com.uade.tpo.demo.entity.ProductoEntity;
+import com.uade.tpo.demo.entity.StockAndType;
+import com.uade.tpo.demo.repository.IProductRepository;
 
 @Service
-public class ProductService implements IProductService{
-    private ProductRepository productRepository;
-
-    public ProductService() {
-        this.productRepository = new ProductRepository();
+public class ProductService implements IProductService {
+    
+    @Autowired
+    private IProductRepository productRepository;
+    
+    public Page<ProductoEntity> getProducts(PageRequest pageable) {
+        return productRepository.findAll(pageable);
     }
     
-    public ArrayList<Product> getProducts() {
-        return productRepository.getProducts();
+    public Optional<ProductoEntity> getProductById(Integer productId) {
+        return productRepository.findById(productId);
     }
     
-
-    public Product createProduct(int newProductId, String newProductName, int newProductPrice, String newProductDescription) throws Exception {         
-        ArrayList<Product> products = productRepository.getProducts();
-        if(products.stream().anyMatch(
-            product -> product.getId() == newProductId || product.getName().equals(newProductName))) 
-            throw new Exception("Ya existe el producto con id: " + newProductId + " o nombre: " + newProductName + " en la base de datos.");
-        return productRepository.createProduct(newProductId, newProductName, newProductPrice, newProductDescription);
+    
+    //Para la venta del producto tengo que cambiar los datos de List<StockAndType> stock, color, type(talle)
+    //recibir una lista de productos (puede tener 1 o N) y editar el stock de cada uno
+    //Si el stock es 0, no se puede vender
+    //Para la creacion de un producto tengo que validar que no exista un producto con el mismo nombre
+    public void sellProduct(List<ProductoEntity> products, String specifiedType) throws Exception{
+        for (ProductoEntity product : products) {
+            List<StockAndType> stock = product.getStock();
+            //TODO: Pedir stock del articulo en base (devuelve lista de StockAndType)
+            for (StockAndType stockAndType : stock) {
+                //TODO: Agregar otro for que cicle sobre el stock de la base a menos que haga Query para saber si hay de ese stock especifico
+                if (stockAndType.getType().equals(specifiedType)) { //Comparar stockAndType con los que estoy ciclando de la DB
+                    if (stockAndType.getQuantity() <= 0) {
+                        throw new Exception("Stock insuficiente");
+                    }
+                    stockAndType.setQuantity(stockAndType.getQuantity() - 1);
+                    //Levantar excepcion si no hay stock de ese tipo
+                }
+            }
         }
     }
+    
+
+    //jwt donde hacemos validaciones que llega al controller tenemos que saber que usuario esta logueado *** PREGUNTAR SERGIO ***
+    //Verificar vigencia de token
+    //verificar que tiene permisos para crear producto 
+    
+    @Transactional(rollbackFor = Throwable.class)
+    public ProductoEntity createProduct(Integer publisherId, String brand, String category, String name,
+    BigDecimal price, String description, List<StockAndType> stock, List<ImageEntity> image) throws ProductDuplicateExecption{
+        List<ProductoEntity> products = productRepository.findByName(name);
+        if (products.isEmpty()) {
+            ProductoEntity product = new ProductoEntity(publisherId, brand, category, name, price, description, stock,
+                    image);
+            productRepository.save(product); //TODO: Guardar stock en base
+            return product;
+        }
+        else {
+            throw new ProductDuplicateExecption();
+        }
+    }
+    }
+
     
 
