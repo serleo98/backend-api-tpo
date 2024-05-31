@@ -5,13 +5,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.uade.tpo.demo.entity.ProductoEntity;
 import com.uade.tpo.demo.entity.StockAndType;
-import com.uade.tpo.demo.entity.User;
-import com.uade.tpo.demo.repository.db.IProductRepository;
 import com.uade.tpo.demo.repository.db.IStock;
 import com.uade.tpo.demo.service.exceptions.StockNotFoundException;
 import com.uade.tpo.demo.service.productService.IProductService;
-import com.uade.tpo.demo.utils.AuthUtils;
-
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -59,7 +55,7 @@ public class ProductsController {
 
     @PostMapping("/create")
     public ResponseEntity<ProductoEntity> createProduct(@RequestBody ProductoEntity productRequest) throws Exception {
-    ProductoEntity result = productService.createProduct(productRequest.getPublisherId(), productRequest.getBrand(), productRequest.getCategory(), productRequest.getName(), productRequest.getPrice(), productRequest.getDescription(), productRequest.getStock(), productRequest.getImage());
+    ProductoEntity result = productService.createProduct(productRequest.getPublisherId().getId(), productRequest.getBrand(), productRequest.getCategory(), productRequest.getName(), productRequest.getPrice(), productRequest.getDescription(), productRequest.getStock(), productRequest.getImage());
     return ResponseEntity.created(URI.create("/products/" + result.getId())).body(result);
     }
 
@@ -79,13 +75,13 @@ public class ProductsController {
         return productService.getProductsFiltered(brand, category, name, minPrice, maxPrice);
     }
 
-    public void purchaseProduct(Integer productId, Integer stockId){
-        Optional<StockAndType> stock = stockRepository.findById(stockId);
-        if(!stock.isEmpty()){
-            productService.purchaseProduct(productId, stock.get());
+    public void purchaseProducts(List<Integer> productIds, List<Integer> stockIds, List<Integer> quantities, Integer buyerId, Integer sellerId, float discount){
+        List<StockAndType> stocks = stockRepository.findAllById(stockIds);
+        if(!stocks.isEmpty()){
+            productService.purchaseProducts(productIds, stocks, quantities, buyerId, sellerId, discount);
         }
         else{
-            throw new StockNotFoundException("Stock with id: " + stockId + " not found");
+            throw new StockNotFoundException("Stocks not found");
         }
     }
     

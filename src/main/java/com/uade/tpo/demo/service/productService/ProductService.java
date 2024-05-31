@@ -2,24 +2,29 @@ package com.uade.tpo.demo.service.productService;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.uade.tpo.demo.entity.ImageEntity;
 import com.uade.tpo.demo.entity.ProductoEntity;
 import com.uade.tpo.demo.entity.StockAndType;
 import com.uade.tpo.demo.entity.User;
-import com.uade.tpo.demo.exceptions.ProductDuplicateExecption;
 import com.uade.tpo.demo.repository.db.IProductRepository;
 import com.uade.tpo.demo.repository.db.IStock;
+import com.uade.tpo.demo.repository.db.UserRepository;
+import com.uade.tpo.demo.service.exceptions.ProductNotFoundException;
+import com.uade.tpo.demo.service.exceptions.StockNotFoundException;
+import com.uade.tpo.demo.service.exceptions.UserNotFoundException;
+import com.uade.tpo.demo.service.transactionService.TransactionService;
 
 @Service
 public class ProductService implements IProductService {
@@ -30,7 +35,11 @@ public class ProductService implements IProductService {
     @Autowired
     private IProductRepository productRepository;
 
-    private TransactionController transactionController;
+    @Autowired
+    private TransactionService transactionService;
+
+    @Autowired
+    private UserRepository userRepository;
     
     public Page<ProductoEntity> getProducts(PageRequest pageable) {
         return productRepository.findAll(pageable);
@@ -68,44 +77,67 @@ public class ProductService implements IProductService {
     //verificar que tiene permisos para crear producto 
     
     @Transactional(rollbackFor = Throwable.class)
-    public ProductoEntity createProduct(User publisherId, String brand, String category, String name,
-    BigDecimal price, String description, List<StockAndType> stock, List<ImageEntity> image) throws ProductDuplicateExecption{
-        List<ProductoEntity> products = productRepository.findByName(name);
-        if (products.isEmpty()) {
-            ProductoEntity productBuild = ProductoEntity.builder()
-                    .publisherId(publisherId)
-                    .brand(brand)
-                    .category(category)
-                    .name(name)
-                    .price(price)
-                    .description(description)
-                    .stock(stock)
-                    .image(image)
-                    .build();
+    public ProductoEntity createProduct(Integer publisherId, String brand, String category, String name,
+    BigDecimal price, String description, List<StockAndType> stock, List<ImageEntity> image){
+            Optional<User> publisher = userRepository.findById(publisherId);
+            if(!publisher.isEmpty()){
+                ProductoEntity productBuild = ProductoEntity.builder()
+                .publisherId(publisher.get())
+                .brand(brand)
+                .category(category)
+                .name(name)
+                .price(price)
+                .description(description)
+                .stock(stock)
+                .image(image)
+                .build();
             stockRepository.saveAll(stock);
             productRepository.save(productBuild); //TODO: Guardar stock en base
             return productBuild;
-        }
-        else {
-            throw new ProductDuplicateExecption();
-        }
+            }
+            else{
+                throw new UserNotFoundException("Publisher not found");
+            }
+
     }
 
     @Override
-    public void purchaseProduct(Integer id, StockAndType stock) {
-        Optional<ProductoEntity> productEntity = productRepository.findById(id);
-        if(!productEntity.isEmpty()){
-            stock.setQuantity(stock.getQuantity() - 1);
-            transactionController.createTransaction();
+    public void purchaseProducts(List<Integer> ids, List<StockAndType> stocks, List<Integer> quantities, Integer buyerId, Integer sellerId, float discount) {
+        if (ids.size() != stocks.size()) {
+            throw new IllegalArgumentException("Products amount does not match with stocks amount");
+        }   
+
+        for(int i = 0; i < ids.size(); i++){
+            Optional<ProductoEntity> productEntity = productRepository.findById(ids.get(i));
+            if(!productEntity.isEmpty()){
+                Optional<StockAndType> stock = stockRepository.findById(stocks.get(i).getId());
+                if(!stock.isEmpty()){
+                    stock.get().setQuantity(stock.get().getQuantity() - quantities.get(i));
+                }
+                else{
+                    throw new StockNotFoundException("Stock with id: " + stocks.get(i).getId() + " not found");
+                }
+            }
+            else{
+                throw new ProductNotFoundException("Product with id: " + ids.get(i) + " not found");
+            }
+
         }
-        else{
-            throw new ProductNotFoundException("Product with id: " + id + " not found")
-        }
+        Date currentDate = new Date();
+        transactionService.createTransaction(currentDate, ids, quantities, buyerId, sellerId, discount);
+
     }
 
     @Override
     public List<ProductoEntity> getProductsBySellerId(Integer userId) {
-        return productRepository.findByPublisherId(userId);
+        Optional<User> user = userRepository.findById(userId);
+        if(!user.isEmpty()){
+            return productRepository.findByPublisherId(user.get());
+        }
+        else{
+            throw new UserNotFoundException("Seller with id: " + userId + " not found");
+        }
+        
     }
 
     @Override

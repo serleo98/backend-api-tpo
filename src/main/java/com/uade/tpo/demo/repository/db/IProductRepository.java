@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import com.uade.tpo.demo.entity.ProductoEntity;
+import com.uade.tpo.demo.entity.User;
 
 
 @Repository
@@ -15,11 +16,11 @@ public interface IProductRepository extends JpaRepository<ProductoEntity, Intege
     @Query(value = "SELECT p FROM ProductoEntity p WHERE p.name = ?1")
     List<ProductoEntity> findByName(String name);
 
-    List<ProductoEntity> findByPublisherId(Integer userId);
+    List<ProductoEntity> findByPublisherId(User user);
     List<ProductoEntity> findByBrand(String brand);
     List<ProductoEntity> findByCategory(String category);
     List<ProductoEntity> findByDescription(String description);
-    List<ProductoEntity> findByPrice(String price);
+    List<ProductoEntity> findByPrice(BigDecimal price);
 
     Collection<? extends ProductoEntity> findByPriceBetween(BigDecimal minPrice, BigDecimal maxPrice);
 

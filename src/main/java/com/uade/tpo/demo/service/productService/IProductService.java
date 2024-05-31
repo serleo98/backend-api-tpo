@@ -8,18 +8,17 @@ import org.springframework.data.domain.PageRequest;
 import com.uade.tpo.demo.entity.ImageEntity;
 import com.uade.tpo.demo.entity.ProductoEntity;
 import com.uade.tpo.demo.entity.StockAndType;
-import com.uade.tpo.demo.entity.User;
 
 public interface IProductService {
     public Page<ProductoEntity> getProducts(PageRequest pageable);
 
     public Optional<ProductoEntity> getProductById(Integer productId);
     
-    public ProductoEntity createProduct(User publisherId, String brand, String category, String name,
+    public ProductoEntity createProduct(Integer publisherId, String brand, String category, String name,
             BigDecimal price, String description, List<StockAndType> stock, List<ImageEntity> image)
             throws Exception;
     
-    public void purchaseProduct(Integer id, StockAndType stock);
+    public void purchaseProducts(List<Integer> ids, List<StockAndType> stocks, List<Integer> quantities, Integer buyerId, Integer sellerId, float discount);
 
     public List<ProductoEntity> getProductsBySellerId(Integer userId);
 
