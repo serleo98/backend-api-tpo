@@ -1,6 +1,7 @@
 package com.uade.tpo.demo.config;
 
 import com.uade.tpo.demo.config.filter.AuthenticationFilter;
+import com.uade.tpo.demo.config.interceptor.AuthInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final AuthenticationFilter jwtAuthFilter;
+    //private final AuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
 
     @Bean
@@ -28,10 +29,8 @@ public class SecurityConfig {
                                 .requestMatchers("/sign-in").permitAll()
                                 .requestMatchers("/swagger-ui/**").permitAll()
                                 .requestMatchers("/v3/api-docs/**").permitAll()
-                                .anyRequest().permitAll())
-                .authenticationProvider(authenticationProvider)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);;
+                                .anyRequest().permitAll());
+                //.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);;
 
         return http.build();
 
