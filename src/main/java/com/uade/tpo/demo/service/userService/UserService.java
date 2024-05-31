@@ -10,5 +10,5 @@ public interface UserService {
 
     void createUser(UserDTO newUser);
     LoginPBDTO login(String email, String password);
-    Optional<User> getUserById(Integer userId);
+    Integer getUserById(Integer userId);
 }

@@ -1,5 +1,6 @@
 package com.uade.tpo.demo.service.userService.impl;
 
+import com.uade.tpo.demo.entity.ProductoEntity;
 import com.uade.tpo.demo.entity.User;
 import com.uade.tpo.demo.entity.dto.LoginPBDTO;
 import com.uade.tpo.demo.entity.dto.NewUserPBDTO;
@@ -58,9 +59,9 @@ public class UserServiceImpl implements UserService {
         return loginPBRepository.execute(email,password).orElseThrow();
     }
 
-    @Override
-    public Optional<User> getUserById(Integer userId) {
-        return userRepository.findById(userId);
+    
+   public Integer getUserById(Integer userId) {
+        return userRepository.findByIdentityId(userId);
     }
 
 }

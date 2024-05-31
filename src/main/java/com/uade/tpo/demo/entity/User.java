@@ -3,6 +3,8 @@ package com.uade.tpo.demo.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,6 +33,7 @@ public class User implements UserDetails {
     private String email;
     private String phone;
     private String identityId;
+    private ImageEntity image;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -66,5 +69,8 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return false;
     }
+
+
+
 }
 
