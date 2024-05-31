@@ -2,24 +2,22 @@ package com.uade.tpo.demo.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.UuidGenerator;
-
-import java.util.UUID;
-
-import static jakarta.persistence.GenerationType.IDENTITY;
+//import org.hibernate.annotations.UuidGenerator;
+import static jakarta.persistence.GenerationType.AUTO;
 
 @Data
 @Entity
 @Table
 public class StockAndType {
 
+    //Donde y cuando se hace el guardado de datos de StockAndType (Y si tengo que armar el constructor)
     @Id
-    @GeneratedValue(strategy = IDENTITY)
-    @UuidGenerator
-    private UUID id;
-    private String description;
-    private String name;
-    private String type;
+    @GeneratedValue(strategy = AUTO)
+    //@UuidGenerator
+    private Integer id;
+    //private String description;
+    //private String name;
+    private String type; //talle
     private String color;
 
     @Enumerated(EnumType.STRING)
