@@ -49,6 +49,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .saleValue(transactionEntity.get().getSaleValue())
                 .discount(transactionEntity.get().getDiscount())
                 .totalValue(transactionEntity.get().getTotalValue())
+                .details(transactionEntity.get().getDetails())
                 .build();
                 return transactionDTO;
         }
@@ -74,6 +75,7 @@ public class TransactionServiceImpl implements TransactionService {
             .saleValue(t.getSaleValue())
             .discount(t.getDiscount())
             .totalValue(t.getTotalValue())
+            .details(t.getDetails())
             .build();
             transactions.add(transactionDTO);
         }
@@ -97,6 +99,7 @@ public class TransactionServiceImpl implements TransactionService {
             .saleValue(t.getSaleValue())
             .discount(t.getDiscount())
             .totalValue(t.getTotalValue())
+            .details(t.getDetails())
             .build();
             transactions.add(transactionDTO);
         }
@@ -139,6 +142,7 @@ public class TransactionServiceImpl implements TransactionService {
             
             sum += (productEntity.getPrice().floatValue() * quantity);
             transactionDetailsRepository.save(transactionDetail);
+            transactionEntity.getDetails().add(transactionDetail);
         }
 
         transactionEntity.setSaleValue(sum);

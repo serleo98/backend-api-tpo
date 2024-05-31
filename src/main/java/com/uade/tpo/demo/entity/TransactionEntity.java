@@ -3,12 +3,15 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.GeneratedValue;
 import lombok.Data;
 import lombok.Builder;
 
 import java.util.Date;
+import java.util.List;
+
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Data
@@ -31,6 +34,9 @@ public class TransactionEntity {
     private float saleValue;
     private float discount;
     private float totalValue;
+
+    @OneToMany
+    private List<TransactionDetailsEntity> details;
 
     public Long getId(){
         return id;

@@ -1,6 +1,9 @@
 package com.uade.tpo.demo.entity.dto;
 
 import java.util.Date;
+import java.util.List;
+
+import com.uade.tpo.demo.entity.TransactionDetailsEntity;
 
 import lombok.Builder;
 import lombok.Data;
@@ -18,4 +21,5 @@ public class TransactionDTO {
     private float saleValue;
     private float discount;
     private float totalValue;
+    private List<TransactionDetailsEntity> details;
 }
