@@ -9,6 +9,9 @@ import com.uade.tpo.demo.repository.db.IStock;
 import com.uade.tpo.demo.service.exceptions.StockNotFoundException;
 import com.uade.tpo.demo.service.productService.IProductService;
 
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import jakarta.transaction.Transactional;
+
 import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
@@ -50,6 +53,7 @@ public class ProductsController {
     }
 
     @PostMapping("/create")
+    @Transactional
     public ResponseEntity<ProductoEntity> createProduct(@RequestBody ProductDTO productRequest) throws Exception {
 
         ProductoEntity result = productService.createProduct(productRequest);
@@ -81,7 +85,13 @@ public class ProductsController {
         return productService.getProductsFiltered(brand, category, name, minPrice, maxPrice);
     }
 
-    public void purchaseProducts(List<Integer> productIds, List<Integer> stockIds, List<Integer> quantities, Integer buyerId, Integer sellerId, float discount) {
+    @PostMapping("/buy")
+    public void purchaseProducts(@RequestParam List<Integer> productIds, 
+                             @RequestParam List<Integer> stockIds, 
+                             @RequestParam List<Integer> quantities, 
+                             @RequestParam Integer buyerId, 
+                             @RequestParam Integer sellerId, 
+                             @RequestParam float discount) {
         List<StockAndType> stocks = stockRepository.findAllById(stockIds);
         if (!stocks.isEmpty()) {
             productService.purchaseProducts(productIds, stocks, quantities, buyerId, sellerId, discount);

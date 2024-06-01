@@ -16,6 +16,7 @@ import com.uade.tpo.demo.repository.db.IProductRepository;
 import com.uade.tpo.demo.repository.db.TransactionDetailsRepository;
 import com.uade.tpo.demo.repository.db.TransactionRepository;
 import com.uade.tpo.demo.repository.db.UserRepository;
+import com.uade.tpo.demo.service.exceptions.ProductNotFoundException;
 import com.uade.tpo.demo.service.exceptions.TransactionNotFoundException;
 import com.uade.tpo.demo.service.exceptions.UserNotFoundException;
 import com.uade.tpo.demo.service.transactionService.TransactionService;
@@ -105,51 +106,53 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public void createTransaction(Date date, List<Integer> productsId, List<Integer> quantities, Integer buyerId, Integer sellerId, float discount) {
-        
-        // Verificar que las listas de productos y cantidades tengan el mismo tamaño
-        if (productsId.size() != quantities.size()) {
-            throw new IllegalArgumentException("La lista de productos y cantidades debe tener el mismo tamaño");
-        }
-        
-        //busco el comprador y el vendedor
-        User buyer = userRepository.findById(buyerId).orElseThrow(() -> new UserNotFoundException("Comprador no encontrado"));
-        User seller = userRepository.findById(sellerId).orElseThrow(() -> new UserNotFoundException("Vendedor no encontrado"));
-        
-        //armo la transaccion, para obtener su id y luego armar los details con este
-        TransactionEntity transactionEntity = TransactionEntity.builder()
+public void createTransaction(Date date, List<Integer> productsId, List<Integer> quantities, Integer buyerId, Integer sellerId, float discount) {
+
+    // Verificar que las listas de productos y cantidades tengan el mismo tamaño
+    if (productsId.size() != quantities.size()) {
+        throw new IllegalArgumentException("La lista de productos y cantidades debe tener el mismo tamaño");
+    }
+
+    // Buscar el comprador y el vendedor
+    User buyer = userRepository.findById(buyerId).orElseThrow(() -> new UserNotFoundException("Comprador no encontrado"));
+    User seller = userRepository.findById(sellerId).orElseThrow(() -> new UserNotFoundException("Vendedor no encontrado"));
+
+    // Armar la transacción
+    TransactionEntity transactionEntity = TransactionEntity.builder()
             .date(date)
             .buyer(buyer)
             .seller(seller)
             .discount(discount)
+            .details(new ArrayList<>())
             .build();
 
+    float sum = 0;
 
-        //Armo todas las entradas en TransactionDetails
-        float sum = 0;
-        for(int i = 0; i < productsId.size(); i++){
-            int productId = productsId.get(i);
-            int quantity = quantities.get(i);
-            Optional<ProductoEntity> productEntity = productRepository.findById(productId);
+    // Create and add transaction details
+    for (int i = 0; i < productsId.size(); i++) {
+        int productId = productsId.get(i);
+        int quantity = quantities.get(i);
+        Optional<ProductoEntity> productEntityOptional = productRepository.findById(productId);
+
+        if (productEntityOptional.isPresent()) {
+            ProductoEntity productEntity = productEntityOptional.get();
             TransactionDetailsEntity transactionDetail = TransactionDetailsEntity.builder()
-                .transaction(transactionEntity)
-                .product(productEntity.get())
-                .unitPrice(productEntity.get().getPrice())
-                .quantity(quantity)
-                .build();
-            
-            sum += (productEntity.get().getPrice().floatValue() * quantity);
-            transactionDetailsRepository.save(transactionDetail);
+                    .transaction(transactionEntity)
+                    .product(productEntity)
+                    .unitPrice(productEntity.getPrice())
+                    .quantity(quantity)
+                    .build();
+
+            sum += (productEntity.getPrice().floatValue() * quantity);
             transactionEntity.getDetails().add(transactionDetail);
+        } else {
+            throw new ProductNotFoundException("Producto no encontrado");
         }
-
-        transactionEntity.setSaleValue(sum);
-        transactionEntity.setTotalValue(sum * discount / 100);
-        transactionRepository.save(transactionEntity);
-
-
-
-            
     }
-    
+
+    transactionEntity.setSaleValue(sum);
+    transactionEntity.setTotalValue(sum * discount / 100);
+
+    transactionRepository.save(transactionEntity);
+}
 }

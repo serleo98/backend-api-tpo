@@ -107,7 +107,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public ProductoEntity modifiProduct(ProductToModifiDTO productToModifiDTO) throws Exception {
+    public ProductoEntity modifiProduct(ProductToModifiDTO productToModifiDTO) throws ProductNotFoundException {
         Optional<ProductoEntity> productdb = productRepository.findById(productToModifiDTO.getId());
 
         if (!productdb.isPresent()) {

@@ -1,4 +1,5 @@
 package com.uade.tpo.demo.entity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -39,9 +41,8 @@ public class TransactionEntity {
     private float discount;
     private float totalValue;
 
-    @OneToMany
-    @JoinColumn(referencedColumnName = "id")
-    private List<TransactionDetailsEntity> details;
+    @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL)
+    private List<TransactionDetailsEntity> details = new ArrayList<>();
 
     public Long getId(){
         return id;

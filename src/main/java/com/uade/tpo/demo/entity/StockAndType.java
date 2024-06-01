@@ -2,13 +2,20 @@ package com.uade.tpo.demo.entity;
 
 import com.uade.tpo.demo.entity.dto.StockAndTypeDto;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 //import org.hibernate.annotations.UuidGenerator;
 import static jakarta.persistence.GenerationType.AUTO;
 
 @Data
 @Entity
 @Table
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class StockAndType {
 
     //Donde y cuando se hace el guardado de datos de StockAndType (Y si tengo que armar el constructor)

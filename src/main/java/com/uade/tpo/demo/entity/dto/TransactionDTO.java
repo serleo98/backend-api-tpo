@@ -1,5 +1,6 @@
 package com.uade.tpo.demo.entity.dto;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,5 +22,5 @@ public class TransactionDTO {
     private float saleValue;
     private float discount;
     private float totalValue;
-    private List<TransactionDetailsEntity> details;
+    private List<TransactionDetailsEntity> details = new ArrayList<>();
 }
