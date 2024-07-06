@@ -63,11 +63,11 @@ public class ProductsController {
 
     @PutMapping("/modify")
     @SecurityRequirement(name = "bearer")
-    public ResponseEntity<ProductoEntity> modifiProduct(@RequestBody ProductToModifiDTO productToModifiDTO) throws Exception {
+    public ResponseEntity modifiProduct(@RequestBody ProductToModifiDTO productToModifiDTO) throws Exception {
 
-        ProductoEntity result = productService.modifiProduct(productToModifiDTO);
+        productService.modifiProduct(productToModifiDTO);
 
-        return ResponseEntity.created(URI.create("/products/" + result.getId())).body(result);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/stocked")
