@@ -4,11 +4,12 @@ import com.uade.tpo.demo.entity.ImageEntity;
 import com.uade.tpo.demo.entity.StockAndType;
 import com.uade.tpo.demo.entity.User;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.List;
-
+@Builder
 @Data
 public class ProductDTO {
 

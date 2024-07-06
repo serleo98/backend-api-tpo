@@ -19,10 +19,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.uade.tpo.demo.config.CloudinaryConfig;
 import com.uade.tpo.demo.entity.ImageEntity;
 import com.uade.tpo.demo.entity.ProductoEntity;
 import com.uade.tpo.demo.entity.StockAndType;
 import com.uade.tpo.demo.entity.User;
+import com.uade.tpo.demo.repository.cloudinary.CloudinaryRepository;
 import com.uade.tpo.demo.repository.db.IProductRepository;
 import com.uade.tpo.demo.repository.db.IStock;
 import com.uade.tpo.demo.repository.db.UserRepository;
@@ -46,6 +50,10 @@ public class ProductService implements IProductService {
     @Autowired
     private UserRepository userRepository;
 
+    
+    @Autowired
+    private CloudinaryRepository cloudinaryRepository;
+
     public Page<ProductoEntity> getProducts(PageRequest pageable) {
         return productRepository.findAll(pageable);
     }
@@ -55,18 +63,22 @@ public class ProductService implements IProductService {
     }
 
     @Transactional(rollbackFor = Throwable.class)
-    public ProductoEntity createProduct(ProductDTO productDTO) {
-
+    public ProductoEntity createProduct(ProductDTO productDTO, List<MultipartFile> imagenes) {
         User currentUser = AuthUtils.getCurrentAuthUser(User.class);
-
-            ProductoEntity productBuild = ProductoEntity.builder()
-                    .publisherId(currentUser)
-                    .brand(productDTO.getBrand())
-                    .category(productDTO.getCategory())
-                    .name(productDTO.getName())
-                    .price(productDTO.getPrice())
-                    .description(productDTO.getDescription())
-                    .build();
+        List<ImageEntity> fotos = new ArrayList<>();
+        for (MultipartFile imagen : imagenes) {
+            String url = cloudinaryRepository.savePhoto(imagen.getName(), imagen);
+            fotos.add(ImageEntity.builder().url(url).build());
+        }
+        ProductoEntity productBuild = ProductoEntity.builder()
+            .publisherId(currentUser)
+            .brand(productDTO.getBrand())
+            .category(productDTO.getCategory())
+            .name(productDTO.getName())
+            .price(productDTO.getPrice())
+            .description(productDTO.getDescription())
+            .image(fotos) // Set the list of ImageEntity objects here
+            .build();
 
             productBuild.addAllStockFromDTO(productDTO.getStock());
 

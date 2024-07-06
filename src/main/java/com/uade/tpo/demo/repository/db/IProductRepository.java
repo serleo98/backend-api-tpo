@@ -15,7 +15,7 @@ public interface IProductRepository extends JpaRepository<ProductoEntity, Intege
     
     @Query(value = "SELECT p FROM ProductoEntity p WHERE p.name = ?1")
     List<ProductoEntity> findByName(String name);
-
+    
     List<ProductoEntity> findByPublisherId(User user);
     List<ProductoEntity> findByBrand(String brand);
     List<ProductoEntity> findByCategory(String category);

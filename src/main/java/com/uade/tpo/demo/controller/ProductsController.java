@@ -3,7 +3,11 @@ package com.uade.tpo.demo.controller;
 import com.uade.tpo.demo.entity.dto.ProductDTO;
 import com.uade.tpo.demo.entity.dto.ProductToModifiDTO;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.uade.tpo.demo.entity.ProductoEntity;
 import com.uade.tpo.demo.entity.StockAndType;
 import com.uade.tpo.demo.repository.db.IStock;
@@ -18,9 +22,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-
+@Slf4j
 @RestController
 @RequestMapping("/products")
 public class ProductsController {
@@ -52,13 +57,32 @@ public class ProductsController {
     }
 
 
-    @PostMapping("/create")
+    @PostMapping(value = "/createe", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @SecurityRequirement(name = "bearer")
-    public ResponseEntity<ProductoEntity> createProduct(@RequestBody ProductDTO productRequest) throws Exception {
-
-        ProductoEntity result = productService.createProduct(productRequest);
-
-        return ResponseEntity.created(URI.create("/products/" + result.getId())).body(result);
+    public ResponseEntity<String> createProduct(@RequestPart("Imagenes")List<MultipartFile> imagenes,
+                                                        @RequestPart String brand,
+                                                        @RequestPart String Category,
+                                                        @RequestPart String name,
+                                                        @RequestPart BigDecimal Precio,
+                                                        @RequestPart String Description
+                                                        ) throws Exception {
+        ProductDTO producto = ProductDTO.builder()
+        .brand(brand)
+        .category(Category)
+        .name(name)
+        .price(Precio)
+        .description(Description)
+        .build();
+        log.info("paso por aca 0 ");
+        try {
+            log.info("paso por aca 1");
+            productService.createProduct(producto, imagenes);
+            return ResponseEntity.ok("productos registrado exitosamente");
+        }catch (Exception e) {
+            log.info("paso por aca 2 ");
+            return ResponseEntity.internalServerError().build();
+        }
+        
     }
 
     @PutMapping("/modify")
