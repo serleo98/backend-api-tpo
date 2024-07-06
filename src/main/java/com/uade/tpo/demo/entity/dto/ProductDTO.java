@@ -12,7 +12,6 @@ import java.util.List;
 @Data
 public class ProductDTO {
 
-
     private Integer publisherId;
     private String brand;
     private String category;

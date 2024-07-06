@@ -34,8 +34,6 @@ public class ProductoEntity {
     private BigDecimal price;
     @Column
     private String description;
-    //@Column
-    //private Integer publisherId;
     
 
     @OneToMany

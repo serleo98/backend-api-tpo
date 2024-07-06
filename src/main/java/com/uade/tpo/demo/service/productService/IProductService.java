@@ -13,23 +13,22 @@ import com.uade.tpo.demo.entity.ProductoEntity;
 import com.uade.tpo.demo.entity.StockAndType;
 
 public interface IProductService {
-    public Page<ProductoEntity> getProducts(PageRequest pageable);
+    Page<ProductoEntity> getProducts(PageRequest pageable);
 
-    public Optional<ProductoEntity> getProductById(Integer productId);
+    Optional<ProductoEntity> getProductById(Integer productId);
     
-    public ProductoEntity createProduct(ProductDTO productDTO)
+    ProductoEntity createProduct(ProductDTO productDTO)
             throws Exception;
 
-    public ProductoEntity modifiProduct(ProductToModifiDTO productToModifiDTO)
+    ProductoEntity modifiProduct(ProductToModifiDTO productToModifiDTO)
             throws Exception;
     
-    public void purchaseProducts(List<Integer> ids, List<StockAndType> stocks, List<Integer> quantities, Integer buyerId, Integer sellerId, float discount);
+    void purchaseProducts(List<Integer> ids, List<StockAndType> stocks, List<Integer> quantities, Integer buyerId, Integer sellerId, float discount);
 
-    public List<ProductoEntity> getProductsBySellerId(Integer userId);
+    List<ProductoEntity> getProductsBySellerId(Integer userId);
 
-    public List<ProductoEntity> getProductsWithStock();
+    List<ProductoEntity> getProductsWithStock();
 
-    public List<ProductoEntity> getProductsFiltered(String brand, String category, String name, BigDecimal minPrice, BigDecimal maxPrice);
-        
+    List<ProductoEntity> getProductsFiltered(String brand, String category, String name, BigDecimal minPrice, BigDecimal maxPrice);
 
 } 

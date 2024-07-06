@@ -18,69 +18,67 @@ import com.uade.tpo.demo.service.transactionService.TransactionService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-
-
 @RestController
 @RequestMapping("/transactions")
 public class TransactionsController{
 
     @Autowired
-    TransactionRepository transactionRepository;
+    private TransactionRepository transactionRepository;
 
     @Autowired
-    TransactionDetailsRepository transactionDetailsRepository;
+    private TransactionDetailsRepository transactionDetailsRepository;
 
     @Autowired
-    TransactionService transactionService;
+    private TransactionService transactionService;
     
     @Autowired
-    TransactionDetailsService transactionDetailsService;
+    private TransactionDetailsService transactionDetailsService;
     
     @GetMapping("/detail{id}")
     public TransactionDetailsDTO getDetailById(Long id){
         return transactionDetailsService.getDetailById(id);
     }
 
-    @GetMapping("/producttransactions{id}")
+    @GetMapping("/product/{id}")
     public  List<TransactionDetailsDTO> getDetailsByProductId(int id){
         return transactionDetailsService.getDetailsByProductId(id);
     }
 
-    @GetMapping("/transactiondetails-{id}")
+    @GetMapping("/details/{id}")
     public List<TransactionDetailsDTO> getDetailsByTransactionId(Long id){
         return transactionDetailsService.getDetailsByTransactionId(id);
     }
 
-    @GetMapping("/transaction-{id}")
+    @GetMapping("/{id}")
     public TransactionDTO getTransactionById(Long id){
         return transactionService.getTransactionById(id);
     }
 
-    @GetMapping("/transactions-user{id}")
+    @GetMapping("/user/{id}")
     public List<TransactionDTO> getAllTransactionsByUser(Integer id){
         List<TransactionDTO> transactions = transactionService.getTransactionsByBuyerId(id);
         transactions.addAll(transactionService.getTransactionsBySellerId(id));
         return transactions;
     }
 
-    @GetMapping("/usersales{id}")
+    @GetMapping("/user/sales{id}")
     public List<TransactionDTO> getSalesByUserId(Integer id){
         List<TransactionDTO> sales = transactionService.getTransactionsBySellerId(id);
         return sales;
     } 
 
-    @GetMapping("/userpurchases{id}")
+    @GetMapping("/user/purchases{id}")
     public List<TransactionDTO> getPurchasesByUserId(Integer id){
         List<TransactionDTO> purchases = transactionService.getTransactionsByBuyerId(id);
         return purchases;
     } 
 
-    @PostMapping("/createTransaction")
+    @PostMapping("/create/transaction")
     public void createTransaction(Date date, List<Integer> productsId, List<Integer> quantities, Integer buyerId, Integer sellerId, float discount){
         transactionService.createTransaction(date, productsId, quantities, buyerId, sellerId, discount);
     }
 
-    @GetMapping("/transactions")
+    @GetMapping("/all")
     public List<TransactionEntity> getAllTransactions(){
         return transactionRepository.findAll();
     }
@@ -89,6 +87,5 @@ public class TransactionsController{
     public List<TransactionDetailsEntity> getAllDetails(){
         return transactionDetailsRepository.findAll();
     }
-
 
 }

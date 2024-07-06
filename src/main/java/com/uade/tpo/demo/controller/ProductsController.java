@@ -2,6 +2,7 @@ package com.uade.tpo.demo.controller;
 
 import com.uade.tpo.demo.entity.dto.ProductDTO;
 import com.uade.tpo.demo.entity.dto.ProductToModifiDTO;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.web.bind.annotation.*;
 import com.uade.tpo.demo.entity.ProductoEntity;
 import com.uade.tpo.demo.entity.StockAndType;
@@ -41,6 +42,7 @@ public class ProductsController {
     }
 
     @GetMapping("/{productId}")
+    @SecurityRequirement(name = "bearer")
     public ResponseEntity<ProductoEntity> getProductById(@PathVariable Integer productId) {
         Optional<ProductoEntity> result = productService.getProductById(productId);
         if (result.isPresent())
@@ -49,7 +51,9 @@ public class ProductsController {
         return ResponseEntity.noContent().build();
     }
 
+
     @PostMapping("/create")
+    @SecurityRequirement(name = "bearer")
     public ResponseEntity<ProductoEntity> createProduct(@RequestBody ProductDTO productRequest) throws Exception {
 
         ProductoEntity result = productService.createProduct(productRequest);
@@ -58,6 +62,7 @@ public class ProductsController {
     }
 
     @PutMapping("/modify")
+    @SecurityRequirement(name = "bearer")
     public ResponseEntity<ProductoEntity> modifiProduct(@RequestBody ProductToModifiDTO productToModifiDTO) throws Exception {
 
         ProductoEntity result = productService.modifiProduct(productToModifiDTO);
@@ -81,6 +86,7 @@ public class ProductsController {
         return productService.getProductsFiltered(brand, category, name, minPrice, maxPrice);
     }
 
+    @PostMapping("/purchase")
     public void purchaseProducts(List<Integer> productIds, List<Integer> stockIds, List<Integer> quantities, Integer buyerId, Integer sellerId, float discount) {
         List<StockAndType> stocks = stockRepository.findAllById(stockIds);
         if (!stocks.isEmpty()) {

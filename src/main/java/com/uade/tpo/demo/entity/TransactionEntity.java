@@ -23,6 +23,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TransactionEntity {
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
@@ -32,9 +33,6 @@ public class TransactionEntity {
     @JoinColumn(referencedColumnName = "id")
     private User buyer;
 
-    @ManyToOne
-    @JoinColumn(referencedColumnName = "id")
-    private User seller;
     private float saleValue;
     private float discount;
     private float totalValue;
@@ -51,13 +49,14 @@ public class TransactionEntity {
         return date;
     }
 
-    public String getBuyerId(){
-        return buyer.getIdentityId();
+    public User getBuyer() {
+        return buyer;
     }
 
-    public String getSellerId(){
-        return seller.getIdentityId();
+    public List<TransactionDetailsEntity> getDetails() {
+        return details;
     }
+
     public float getSaleValue(){
         return saleValue;
     }

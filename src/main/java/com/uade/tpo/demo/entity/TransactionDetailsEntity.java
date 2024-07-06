@@ -21,13 +21,10 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TransactionDetailsEntity {
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(referencedColumnName = "id")
-    private TransactionEntity transaction;
 
     @ManyToOne
     @JoinColumn(referencedColumnName = "id")
@@ -35,14 +32,9 @@ public class TransactionDetailsEntity {
 
     private BigDecimal unitPrice;
     private Integer quantity;
-    
 
     public Long getId(){
         return id;
-    }
-
-    public TransactionEntity getTransaction(){
-        return transaction;
     }
 
     public ProductoEntity getProduct(){

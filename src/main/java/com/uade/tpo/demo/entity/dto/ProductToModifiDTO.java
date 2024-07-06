@@ -9,7 +9,6 @@ import java.util.List;
 public class ProductToModifiDTO {
 
     private Integer id;
-    private Integer publisherId;
     private String brand;
     private String category;
     private String name;

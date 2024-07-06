@@ -34,7 +34,7 @@ public class TransactionsDetailsServiceImpl implements TransactionDetailsService
         if(!transactionDetail.isEmpty()){
             TransactionDetailsDTO detailDTO = TransactionDetailsDTO.builder()
                 .id(transactionDetail.get().getId())
-                .transactionId(transactionDetail.get().getTransaction().getId())
+                .transactionId(transactionDetail.get().getId())
                 .productId(transactionDetail.get().getProduct().getId())
                 .unitPrice(transactionDetail.get().getUnitPrice())
                 .quantity(transactionDetail.get().getQuantity())
@@ -50,7 +50,7 @@ public class TransactionsDetailsServiceImpl implements TransactionDetailsService
         Optional<TransactionEntity> transactionEntity = transactionRepository.findById(id);
         if(!transactionEntity.isEmpty()){
             List<TransactionDetailsDTO> transactionDetailsDTO = new ArrayList<>();
-            List<TransactionDetailsEntity> transactionDetails = transactionsDetailsRepository.findByTransaction(transactionEntity.get());
+            List<TransactionDetailsEntity> transactionDetails = transactionEntity.get().getDetails();
             for(TransactionDetailsEntity detail : transactionDetails){
                 TransactionDetailsDTO detailDTO = TransactionDetailsDTO.builder()
                 .id(detail.getId())
@@ -77,7 +77,7 @@ public class TransactionsDetailsServiceImpl implements TransactionDetailsService
             for(TransactionDetailsEntity detail : transactionDetails){
                 TransactionDetailsDTO detailDTO = TransactionDetailsDTO.builder()
                 .id(detail.getId())
-                .transactionId(detail.getTransaction().getId())
+                .transactionId(detail.getId())
                 .productId(id)
                 .unitPrice(detail.getUnitPrice())
                 .quantity(detail.getQuantity())

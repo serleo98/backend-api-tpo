@@ -42,8 +42,7 @@ public class TransactionServiceImpl implements TransactionService {
             TransactionDTO transactionDTO = TransactionDTO.builder()
                 .id(transactionEntity.get().getId())
                 .date(transactionEntity.get().getDate())
-                .buyerId(transactionEntity.get().getBuyerId())
-                .sellerId(transactionEntity.get().getSellerId())
+                .buyerId(transactionEntity.get().getBuyer())
                 .saleValue(transactionEntity.get().getSaleValue())
                 .discount(transactionEntity.get().getDiscount())
                 .totalValue(transactionEntity.get().getTotalValue())
@@ -68,8 +67,7 @@ public class TransactionServiceImpl implements TransactionService {
             TransactionDTO transactionDTO = TransactionDTO.builder()
             .id(t.getId())
             .date(t.getDate())
-            .buyerId(t.getBuyerId())
-            .sellerId(t.getSellerId())
+            .buyerId(t.getBuyer())
             .saleValue(t.getSaleValue())
             .discount(t.getDiscount())
             .totalValue(t.getTotalValue())
@@ -86,14 +84,13 @@ public class TransactionServiceImpl implements TransactionService {
         if(seller.isEmpty()){
             throw new UserNotFoundException("User with id" + id + "not found");
         }
-        List<TransactionEntity> transactionEntity = transactionRepository.findBySeller(seller.get());
+        List<TransactionEntity> transactionEntity = transactionRepository.findBySeller(seller.get().getId());
         List<TransactionDTO> transactions = new ArrayList<>();
         for(TransactionEntity t : transactionEntity){
             TransactionDTO transactionDTO = TransactionDTO.builder()
             .id(t.getId())
             .date(t.getDate())
-            .buyerId(t.getBuyerId())
-            .sellerId(t.getSellerId())
+            .buyerId(t.getBuyer())
             .saleValue(t.getSaleValue())
             .discount(t.getDiscount())
             .totalValue(t.getTotalValue())
@@ -114,13 +111,11 @@ public class TransactionServiceImpl implements TransactionService {
         
         //busco el comprador y el vendedor
         User buyer = userRepository.findById(buyerId).orElseThrow(() -> new UserNotFoundException("Comprador no encontrado"));
-        User seller = userRepository.findById(sellerId).orElseThrow(() -> new UserNotFoundException("Vendedor no encontrado"));
-        
+
         //armo la transaccion, para obtener su id y luego armar los details con este
         TransactionEntity transactionEntity = TransactionEntity.builder()
             .date(date)
             .buyer(buyer)
-            .seller(seller)
             .discount(discount)
             .build();
 
@@ -132,7 +127,6 @@ public class TransactionServiceImpl implements TransactionService {
             int quantity = quantities.get(i);
             Optional<ProductoEntity> productEntity = productRepository.findById(productId);
             TransactionDetailsEntity transactionDetail = TransactionDetailsEntity.builder()
-                .transaction(transactionEntity)
                 .product(productEntity.get())
                 .unitPrice(productEntity.get().getPrice())
                 .quantity(quantity)
@@ -146,10 +140,6 @@ public class TransactionServiceImpl implements TransactionService {
         transactionEntity.setSaleValue(sum);
         transactionEntity.setTotalValue(sum * discount / 100);
         transactionRepository.save(transactionEntity);
-
-
-
-            
     }
     
 }

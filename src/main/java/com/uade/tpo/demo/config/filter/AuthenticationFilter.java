@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -19,9 +20,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
-//@Component
+@Component
 public class AuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
@@ -40,12 +42,15 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             if (StringUtils.isNotBlank(jwt) ) {
 
                 Optional<LoginPBDTO> refreshValidation = refreshToken.execute(jwt);
+
                 if(refreshValidation.isPresent()){
+
                     String userId = refreshValidation.get().getRecord().getId();
-                    Optional<User> userdb=userRepository.findByIdentityId(userId);
+                    Optional<User> userdb = userRepository.findByIdentityId(userId);
+
                     if(userdb.isPresent()){
 
-                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userdb, null, new ArrayList<>());
+                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userdb, null, List.of(new SimpleGrantedAuthority("USER")));
                         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                         SecurityContextHolder.getContext().setAuthentication(authentication);

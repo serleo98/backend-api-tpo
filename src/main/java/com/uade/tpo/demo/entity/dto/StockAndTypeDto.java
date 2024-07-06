@@ -17,6 +17,7 @@ public class StockAndTypeDto {
     //@UuidGenerato
     //private String description;
     //private String name;
+    private Integer id;
     private String type; //talle
     private String color;
 

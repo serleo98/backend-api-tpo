@@ -12,7 +12,5 @@ import com.uade.tpo.demo.entity.TransactionEntity;
 
 @Repository
 public interface TransactionDetailsRepository extends JpaRepository<TransactionDetailsEntity, Long>{
-    Optional<TransactionDetailsEntity> findById(Long id);
-    List<TransactionDetailsEntity> findByTransaction(TransactionEntity transaction);
     List<TransactionDetailsEntity> findByProduct(ProductoEntity product);
 } 
