@@ -5,6 +5,7 @@ import com.uade.tpo.demo.config.interceptor.AuthInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -37,9 +38,13 @@ public class SecurityConfig {
                                 .requestMatchers("/refresh").hasAuthority("USER")
 
                                 //PRODUCTS
-                                .requestMatchers("/products/**").hasAuthority("USER")
+                                .requestMatchers(HttpMethod.POST,"/products/**").hasAuthority("USER")
+                                .requestMatchers(HttpMethod.PUT,"/products/**").hasAuthority("USER")
+                                .requestMatchers(HttpMethod.GET,"/products").permitAll()
 
                                 .requestMatchers("/transactions/**").hasAuthority("USER")
+
+                                .requestMatchers("/payments/**").hasAuthority("USER")
 
                                 //SWAGGER
                                 .requestMatchers("/swagger-ui/**").permitAll()

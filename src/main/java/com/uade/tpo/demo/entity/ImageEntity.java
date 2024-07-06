@@ -24,7 +24,6 @@ public class ImageEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    //@UuidGenerator
     private Integer id;
     private String url;
     private String description;

@@ -1,10 +1,5 @@
 package com.uade.tpo.demo.entity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -20,10 +15,11 @@ import java.math.BigDecimal;
 @Table(name = "details")
 @AllArgsConstructor
 @NoArgsConstructor
+@SequenceGenerator(name = "details_id_seq", sequenceName = "details_id_seq")
 public class TransactionDetailsEntity {
 
     @Id
-    @GeneratedValue(strategy = IDENTITY)
+    @GeneratedValue
     private Long id;
 
     @ManyToOne
@@ -33,20 +29,8 @@ public class TransactionDetailsEntity {
     private BigDecimal unitPrice;
     private Integer quantity;
 
-    public Long getId(){
-        return id;
-    }
+    @ManyToOne
+    private StockAndType stockAndType;
 
-    public ProductoEntity getProduct(){
-        return product;
-    }
-
-    public BigDecimal getUnitPrice(){
-        return unitPrice;
-    }
-
-    public Integer getQuantity(){
-        return quantity;
-    }
 
 }
