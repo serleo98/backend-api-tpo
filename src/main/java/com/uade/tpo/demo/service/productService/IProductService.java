@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.uade.tpo.demo.entity.dto.ProductDTO;
 import com.uade.tpo.demo.entity.dto.ProductToModifiDTO;
+import com.uade.tpo.demo.entity.dto.StockAndTypeDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +21,9 @@ public interface IProductService {
     Optional<ProductoEntity> getProductById(Integer productId);
     
     ProductoEntity createProduct(ProductDTO productDTO, List<MultipartFile> imagenes)
+            throws Exception;
+
+    void addStock(Integer productid, List<StockAndTypeDto> stockAndTypeDtos)
             throws Exception;
 
     ProductoEntity modifiProduct(ProductToModifiDTO productToModifiDTO)

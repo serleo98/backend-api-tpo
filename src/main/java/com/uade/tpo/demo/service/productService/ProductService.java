@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import com.uade.tpo.demo.entity.dto.ProductDTO;
 import com.uade.tpo.demo.entity.dto.ProductToModifiDTO;
 import com.uade.tpo.demo.entity.dto.StockAndTypeDto;
+import com.uade.tpo.demo.repository.db.ImageEntityRepository;
 import com.uade.tpo.demo.utils.AuthUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -50,6 +51,8 @@ public class ProductService implements IProductService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private ImageEntityRepository imageEntityRepository;
     
     @Autowired
     private CloudinaryRepository cloudinaryRepository;
@@ -64,11 +67,15 @@ public class ProductService implements IProductService {
 
     @Transactional(rollbackFor = Throwable.class)
     public ProductoEntity createProduct(ProductDTO productDTO, List<MultipartFile> imagenes) {
+
         User currentUser = AuthUtils.getCurrentAuthUser(User.class);
         List<ImageEntity> fotos = new ArrayList<>();
+
         for (MultipartFile imagen : imagenes) {
             String url = cloudinaryRepository.savePhoto(imagen.getName(), imagen);
-            fotos.add(ImageEntity.builder().url(url).build());
+            ImageEntity newimg = ImageEntity.builder().url(url).build();
+            imageEntityRepository.saveAndFlush(newimg);
+            fotos.add(newimg);
         }
         ProductoEntity productBuild = ProductoEntity.builder()
             .publisherId(currentUser)
@@ -80,9 +87,9 @@ public class ProductService implements IProductService {
             .image(fotos) // Set the list of ImageEntity objects here
             .build();
 
-            productBuild.addAllStockFromDTO(productDTO.getStock());
+            //productBuild.addAllStockFromDTO(productDTO.getStock());
 
-            stockRepository.saveAllAndFlush(productBuild.getStock());
+            //stockRepository.saveAllAndFlush(productBuild.getStock());
 
             productRepository.saveAndFlush(productBuild); //TODO: Guardar stock en base
             return productBuild;
@@ -225,6 +232,20 @@ public class ProductService implements IProductService {
         }
 
         return new ArrayList<>(filtered);
+    }
+
+    @Override
+    public void addStock(Integer productid, List<StockAndTypeDto> stockAndTypeDtos) throws Exception {
+
+        ProductoEntity p = productRepository.findById(productid)
+                .orElseThrow(() -> new ProductNotFoundException("Product with id: " + productid + " not found"));
+
+        stockAndTypeDtos.forEach(stockAndTypeDto -> {
+            StockAndType stockAndType = StockAndType.fromDto(stockAndTypeDto);
+            stockRepository.saveAndFlush(stockAndType);
+            p.addStock(stockAndType);
+        });
+        productRepository.saveAndFlush(p);
     }
 }
 

@@ -34,7 +34,6 @@ public class ProductoEntity {
     private BigDecimal price;
     @Column
     private String description;
-    
 
     @OneToMany
     @JoinColumn(referencedColumnName = "id") //TODO: Como se relaciona producto con esto

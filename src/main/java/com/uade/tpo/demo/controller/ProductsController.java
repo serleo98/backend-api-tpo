@@ -2,6 +2,7 @@ package com.uade.tpo.demo.controller;
 
 import com.uade.tpo.demo.entity.dto.ProductDTO;
 import com.uade.tpo.demo.entity.dto.ProductToModifiDTO;
+import com.uade.tpo.demo.entity.dto.StockAndTypeDto;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 
@@ -59,31 +60,43 @@ public class ProductsController {
 
     @PostMapping(value = "/createe", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @SecurityRequirement(name = "bearer")
-    public ResponseEntity<String> createProduct(@RequestPart("Imagenes")List<MultipartFile> imagenes,
-                                                        @RequestPart String brand,
-                                                        @RequestPart String Category,
-                                                        @RequestPart String name,
-                                                        @RequestPart BigDecimal Precio,
-                                                        @RequestPart String Description
-                                                        ) throws Exception {
+    public ResponseEntity<String> createProduct(@RequestPart("Imagenes") List<MultipartFile> imagenes,
+                                                @RequestParam String brand,
+                                                @RequestParam String Category,
+                                                @RequestParam String name,
+                                                @RequestParam BigDecimal Precio,
+                                                @RequestParam String Description
+    ) throws Exception {
         ProductDTO producto = ProductDTO.builder()
-        .brand(brand)
-        .category(Category)
-        .name(name)
-        .price(Precio)
-        .description(Description)
-        .build();
+                .brand(brand)
+                .category(Category)
+                .name(name)
+                .price(Precio)
+                .description(Description)
+                .build();
         log.info("paso por aca 0 ");
         try {
             log.info("paso por aca 1");
             productService.createProduct(producto, imagenes);
             return ResponseEntity.ok("productos registrado exitosamente");
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.info("paso por aca 2 ");
             return ResponseEntity.internalServerError().build();
         }
-        
+
     }
+
+    @PutMapping(value = "/addStock/{productId}")
+    @SecurityRequirement(name = "bearer")
+    public ResponseEntity<String> createProduct(@RequestParam Integer productId ,@RequestBody List<StockAndTypeDto> stockAndTypeDto) throws Exception {
+        try {
+            productService.addStock(productId,stockAndTypeDto);
+            return ResponseEntity.ok("Stock agregado exitosamente");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
 
     @PutMapping("/modify")
     @SecurityRequirement(name = "bearer")
