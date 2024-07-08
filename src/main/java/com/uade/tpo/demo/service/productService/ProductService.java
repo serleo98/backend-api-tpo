@@ -15,6 +15,9 @@ import com.uade.tpo.demo.entity.dto.ProductToModifiDTO;
 import com.uade.tpo.demo.entity.dto.StockAndTypeDto;
 import com.uade.tpo.demo.repository.db.ImageEntityRepository;
 import com.uade.tpo.demo.utils.AuthUtils;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,7 +38,7 @@ import com.uade.tpo.demo.service.exceptions.ProductNotFoundException;
 import com.uade.tpo.demo.service.exceptions.StockNotFoundException;
 import com.uade.tpo.demo.service.exceptions.UserNotFoundException;
 import com.uade.tpo.demo.service.transactionService.TransactionService;
-
+@Slf4j
 @Service
 public class ProductService implements IProductService {
 
@@ -99,7 +102,7 @@ public class ProductService implements IProductService {
 
     @Transactional(rollbackFor = Throwable.class)
     @Override
-    public ProductoEntity modifiProduct(ProductToModifiDTO productToModifiDTO) throws Exception {
+    public ProductoEntity modifiProduct(ProductToModifiDTO productToModifiDTO, List<MultipartFile> imagenes) throws Exception {
         Optional<ProductoEntity> productdb = productRepository.findById(productToModifiDTO.getId());
 
         User currentUser = AuthUtils.getCurrentAuthUser(User.class);
@@ -132,6 +135,19 @@ public class ProductService implements IProductService {
 
         if (productToModifiDTO.getDescription() != null) {
             productEntity.setDescription(productToModifiDTO.getDescription());
+        }
+        log.info("paso por aca 1");
+        if(!imagenes.isEmpty()){
+            List<ImageEntity> Fotos = productEntity.getImage();
+
+            for (MultipartFile imagen : imagenes) {
+                String url = cloudinaryRepository.savePhoto(imagen.getName(), imagen);
+                ImageEntity newimg = ImageEntity.builder().url(url).build();
+                imageEntityRepository.saveAndFlush(newimg);
+                Fotos.add(newimg);
+            }
+            
+            productEntity.setImage(Fotos);
         }
 
         productToModifiDTO.getStock()

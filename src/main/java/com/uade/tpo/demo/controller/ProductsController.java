@@ -74,13 +74,13 @@ public class ProductsController {
                 .price(Precio)
                 .description(Description)
                 .build();
-        log.info("paso por aca 0 ");
+        
         try {
-            log.info("paso por aca 1");
+            
             productService.createProduct(producto, imagenes);
             return ResponseEntity.ok("productos registrado exitosamente");
         } catch (Exception e) {
-            log.info("paso por aca 2 ");
+        
             return ResponseEntity.internalServerError().build();
         }
 
@@ -98,11 +98,12 @@ public class ProductsController {
     }
 
 
-    @PutMapping("/modify")
+    
+    @PutMapping(value = "/modify", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @SecurityRequirement(name = "bearer")
-    public ResponseEntity<ProductoEntity> modifiProduct(@RequestBody ProductToModifiDTO productToModifiDTO) throws Exception {
+    public ResponseEntity<ProductoEntity> modifiProduct(@RequestBody ProductToModifiDTO productToModifiDTO,@RequestPart("Imagenes") List<MultipartFile> imagenes) throws Exception {
 
-        ProductoEntity result = productService.modifiProduct(productToModifiDTO);
+        ProductoEntity result = productService.modifiProduct(productToModifiDTO,imagenes);
 
         return ResponseEntity.created(URI.create("/products/" + result.getId())).body(result);
     }

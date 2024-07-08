@@ -26,7 +26,7 @@ public interface IProductService {
     void addStock(Integer productid, List<StockAndTypeDto> stockAndTypeDtos)
             throws Exception;
 
-    ProductoEntity modifiProduct(ProductToModifiDTO productToModifiDTO)
+    ProductoEntity modifiProduct(ProductToModifiDTO productToModifiDTO, List<MultipartFile> imagenes)
             throws Exception;
     
     void purchaseProducts(List<Integer> ids, List<StockAndType> stocks, List<Integer> quantities, Integer buyerId, Integer sellerId, float discount);
