@@ -42,13 +42,15 @@ public class ProductsController {
     }
 
     @GetMapping("/{productId}")
-    @SecurityRequirement(name = "bearer")
+    //@SecurityRequirement(name = "bearer")
     public ResponseEntity<ProductoEntity> getProductById(@PathVariable Integer productId) {
+
         Optional<ProductoEntity> result = productService.getProductById(productId);
         if (result.isPresent())
             return ResponseEntity.ok(result.get());
 
         return ResponseEntity.noContent().build();
+
     }
 
 
@@ -75,7 +77,8 @@ public class ProductsController {
         return productService.getProductsWithStock();
     }
 
-    @GetMapping("/seller{id}")
+    @GetMapping("/seller/{id}")
+    @SecurityRequirement(name = "bearer")
     public List<ProductoEntity> getProductsBySellerID(Integer id) {
         return productService.getProductsBySellerId(id);
     }
