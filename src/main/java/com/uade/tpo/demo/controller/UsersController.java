@@ -60,7 +60,7 @@ public class UsersController {
 
     @SecurityRequirement(name = "bearer")
     @GetMapping
-    public ResponseEntity getUserInfo(@RequestParam String jwt) {
+    public ResponseEntity getUserInfo() {
 
         //TODO: EJEMPLO DE OBTENER LOS DATOS DE LA SESION ACTUAL
         User currentUser = AuthUtils.getCurrentAuthUser(User.class);
