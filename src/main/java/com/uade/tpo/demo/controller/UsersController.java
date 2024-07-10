@@ -57,4 +57,15 @@ public class UsersController {
         return ResponseEntity.ok(refreshToken.execute(jwt));
 
     }
+
+    @SecurityRequirement(name = "bearer")
+    @GetMapping
+    public ResponseEntity getUserInfo(@RequestParam String jwt) {
+
+        //TODO: EJEMPLO DE OBTENER LOS DATOS DE LA SESION ACTUAL
+        User currentUser = AuthUtils.getCurrentAuthUser(User.class);
+
+        return ResponseEntity.ok(currentUser);
+
+    }
 }

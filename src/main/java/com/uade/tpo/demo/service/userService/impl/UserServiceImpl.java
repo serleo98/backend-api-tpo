@@ -82,4 +82,8 @@ public class UserServiceImpl implements UserService {
         return loginPBRepository.execute(email, password).orElseThrow();
     }
 
+    public User getUser(String identityId) {
+        return userRepository.findByIdentityId(identityId).orElseThrow();
+    }
+
 }
