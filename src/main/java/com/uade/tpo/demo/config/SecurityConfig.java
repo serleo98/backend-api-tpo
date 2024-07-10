@@ -43,7 +43,7 @@ public class SecurityConfig {
                                 //PRODUCTS
                                 .requestMatchers(HttpMethod.POST,"/products/**").hasAuthority("USER")
                                 .requestMatchers(HttpMethod.PUT,"/products/**").hasAuthority("USER")
-                                .requestMatchers(HttpMethod.GET,"/products").permitAll()
+                                .requestMatchers(HttpMethod.GET,"/products/**").permitAll()
 
                                 .requestMatchers("/transactions/**").hasAuthority("USER")
 
