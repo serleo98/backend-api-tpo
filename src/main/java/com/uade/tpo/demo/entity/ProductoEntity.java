@@ -62,14 +62,12 @@ public class ProductoEntity implements Serializable {
         this.stock.add(fromDto(stockAndType));
     }
 
-
     public void addStock(StockAndType stockAndType){
         if(this.stock == null){
             this.stock = new ArrayList<>();
         }
         this.stock.add(stockAndType);
     }
-
 
     public static StockAndType fromDto(StockAndTypeDto dto) {
         StockAndType stockAndType = new StockAndType();

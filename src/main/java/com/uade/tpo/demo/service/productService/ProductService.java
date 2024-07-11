@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 import com.uade.tpo.demo.entity.dto.ProductDTO;
 import com.uade.tpo.demo.entity.dto.ProductToModifiDTO;
 import com.uade.tpo.demo.entity.dto.StockAndTypeDto;
+import com.uade.tpo.demo.repository.cloudinary.CloudinaryRepository;
+import com.uade.tpo.demo.repository.db.ImageEntityRepository;
 import com.uade.tpo.demo.utils.AuthUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,6 +32,7 @@ import com.uade.tpo.demo.service.exceptions.ProductNotFoundException;
 import com.uade.tpo.demo.service.exceptions.StockNotFoundException;
 import com.uade.tpo.demo.service.exceptions.UserNotFoundException;
 import com.uade.tpo.demo.service.transactionService.TransactionService;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class ProductService implements IProductService {
@@ -45,6 +48,12 @@ public class ProductService implements IProductService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CloudinaryRepository cloudinaryRepository;
+
+    @Autowired
+    private ImageEntityRepository imageEntityRepository;
 
     public Page<ProductoEntity> getProducts(PageRequest pageable) {
         return productRepository.findAll(pageable);
@@ -80,8 +89,28 @@ public class ProductService implements IProductService {
 
             productRepository.saveAndFlush(productBuild); //TODO: Guardar stock en base
             return productBuild;
+    }
 
+    @Override
+    public void addPhoto(MultipartFile img, Integer productId) throws Exception {
 
+        Optional<ProductoEntity> productdb = productRepository.findById(productId);
+        if (productdb.isEmpty()) {
+            throw new ProductNotFoundException("Product with id: " + productId + " not found");
+        }
+        ProductoEntity product = productdb.get();
+        String url = cloudinaryRepository.savePhoto(img.getName(), img);
+        ImageEntity image = ImageEntity.builder()
+                .url(url)
+                .build();
+
+        if(product.getImage() == null){
+            product.setImage(new ArrayList<>());
+        }
+
+        imageEntityRepository.saveAndFlush(image);
+        product.getImage().add(image);
+        productRepository.save(product);
     }
 
     @Transactional(rollbackFor = Throwable.class)

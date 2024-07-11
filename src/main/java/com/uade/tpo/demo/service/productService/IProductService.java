@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import com.uade.tpo.demo.entity.ImageEntity;
 import com.uade.tpo.demo.entity.ProductoEntity;
 import com.uade.tpo.demo.entity.StockAndType;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface IProductService {
     Page<ProductoEntity> getProducts(PageRequest pageable);
@@ -21,6 +22,8 @@ public interface IProductService {
     
     ProductoEntity createProduct(ProductDTO productDTO)
             throws Exception;
+
+    void addPhoto(MultipartFile img, Integer productId) throws Exception;
 
     ProductoEntity modifiProduct(ProductToModifiDTO productToModifiDTO)
             throws Exception;
