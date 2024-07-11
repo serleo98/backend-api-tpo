@@ -79,11 +79,15 @@ public class ProductsController {
         return productService.getProductsBySellerId(id);
     }
 
-    @GetMapping("/filtered")
-    public List<ProductoEntity> getProductsFiltered(String brand, String category, String name, BigDecimal minPrice, BigDecimal maxPrice) {
-        //params in null if none
-        return productService.getProductsFiltered(brand, category, name, minPrice, maxPrice);
-    }
+@GetMapping("/filtered")
+public List<ProductoEntity> getProductsFiltered(
+        @RequestParam(required = false) String brand,
+        @RequestParam(required = false) String category,
+        @RequestParam(required = false) String name,
+        @RequestParam(required = false) BigDecimal minPrice,
+        @RequestParam(required = false) BigDecimal maxPrice) {
+    return productService.getProductsFiltered(brand, category, name, minPrice, maxPrice);
+}
 
     @PostMapping("/buy")
     public void purchaseProducts(@RequestParam List<Integer> productIds, 
