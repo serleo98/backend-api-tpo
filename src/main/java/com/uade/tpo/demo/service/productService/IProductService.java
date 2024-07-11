@@ -23,12 +23,12 @@ public interface IProductService {
     ProductoEntity createProduct(ProductDTO productDTO)
             throws Exception;
 
-    void addPhoto(MultipartFile img, Integer productId) throws Exception;
+//     void addPhoto(MultipartFile img, Integer productId) throws Exception;
 
-    ProductoEntity modifiProduct(ProductToModifiDTO productToModifiDTO)
+    ProductoEntity modifyProduct(ProductToModifiDTO productToModifiDTO)
             throws Exception;
     
-    void purchaseProducts(List<Integer> ids, List<StockAndType> stocks, List<Integer> quantities, Integer buyerId, Integer sellerId, float discount);
+    void purchaseProducts(List<Integer> ids, List<Integer> quantities, Integer buyerId, float discount);
 
     List<ProductoEntity> getProductsBySellerId(Integer userId);
 

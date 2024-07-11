@@ -74,8 +74,8 @@ public class TransactionsController{
     } 
 
     @PostMapping("/create/transaction")
-    public void createTransaction(Date date, List<Integer> productsId, List<Integer> quantities, Integer buyerId, Integer sellerId, float discount){
-        transactionService.createTransaction(date, productsId, quantities, buyerId, sellerId, discount);
+    public void createTransaction(Date date, List<Integer> productsId, List<Integer> quantities, Integer buyerId, float discount){
+        transactionService.createTransaction(date, productsId, quantities, buyerId, discount);
     }
 
     @GetMapping("/all")

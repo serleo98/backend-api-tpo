@@ -13,6 +13,9 @@ public class ProductToModifiDTO {
     private String category;
     private String name;
     private BigDecimal price;
-    private String description;
-    private List<StockAndTypeDto> stock;
+    private BigDecimal size;
+    private String color;
+    private String sex;
+    private Integer stock;
+    private String image;
 }

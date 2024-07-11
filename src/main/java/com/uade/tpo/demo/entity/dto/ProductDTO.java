@@ -12,12 +12,14 @@ import java.util.List;
 @Data
 public class ProductDTO {
 
-    private Integer publisherId;
     private String brand;
     private String category;
     private String name;
     private BigDecimal price;
-    private String description;
+    private BigDecimal size;
+    private String color;
+    private String sex;
+    private Integer stock;
+    private String image;
 
-    private List<StockAndTypeDto> stock;
 }

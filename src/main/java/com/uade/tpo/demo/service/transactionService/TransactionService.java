@@ -9,6 +9,6 @@ public interface TransactionService {
     TransactionDTO getTransactionById(Long id);
     List<TransactionDTO> getTransactionsByBuyerId(Integer id);
     List<TransactionDTO> getTransactionsBySellerId(Integer id);
-    void createTransaction(Date date, List<Integer> productsId, List<Integer> quantities, Integer buyerId, Integer sellerId, float discount);
+    void createTransaction(Date date, List<Integer> productsId, List<Integer> quantities, Integer buyerId, float discount);
 
 }

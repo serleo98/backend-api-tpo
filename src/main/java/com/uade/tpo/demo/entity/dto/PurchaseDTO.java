@@ -13,7 +13,6 @@ public class PurchaseDTO {
     @Data
     public static class PurchaseProductDTO {
         private Integer productId;
-        private Integer stockId;
         private Integer quantity;
     }
 }

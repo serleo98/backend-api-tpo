@@ -29,8 +29,5 @@ public class TransactionDetailsEntity {
     private BigDecimal unitPrice;
     private Integer quantity;
 
-    @ManyToOne
-    private StockAndType stockAndType;
-
 
 }

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class PurchaseServiceImpl implements PurchaseService{
@@ -37,48 +38,57 @@ public class PurchaseServiceImpl implements PurchaseService{
     @Transactional
     @Override
     public void purchase(PurchaseDTO purchaseDTO, User buyer) {
-
-        BigDecimal totalPrice = BigDecimal.ZERO;
-        BigDecimal totalPriceWithDiscount = BigDecimal.ZERO;
+    
+        AtomicReference<BigDecimal> totalPrice = new AtomicReference<>(BigDecimal.ZERO);
+        AtomicReference<BigDecimal> totalPriceWithDiscount = new AtomicReference<>(BigDecimal.ZERO);
         List<TransactionDetailsEntity> transactionDetailsEntities = new ArrayList<>();
-
+    
+        // Validar y actualizar el stock de cada producto
         purchaseDTO.getProducts().forEach(product -> {
             Optional<ProductoEntity> p = productRepository.findById(product.getProductId());
             if (p.isPresent()) {
                 ProductoEntity productEntity = p.get();
-
-                productEntity.getStock().forEach(stock -> {
-                    if (stock.getId().equals(product.getStockId())) {
-                        if(product.getQuantity() <= 0 && product.getQuantity() > stock.getQuantity()){
-                            throw new RuntimeException("Stock not available");
-                        }
-                        stock.setQuantity(stock.getQuantity() - product.getQuantity());
-                        TransactionDetailsEntity transactionDetails = TransactionDetailsEntity.builder()
-                                .product(productEntity)
-                                .quantity(product.getQuantity())
-                                .unitPrice(productEntity.getPrice())
-                                .stockAndType(stock)
-                                .build();
-                        transactionDetailsRepository.save(transactionDetails);
-                        transactionDetailsEntities.add(transactionDetails);
-                    }
-                });
-
-                totalPrice.add(productEntity.getPrice().multiply(BigDecimal.valueOf(product.getQuantity())));
-
+                if (productEntity.getStock() <= 0 || product.getQuantity() > productEntity.getStock()) {
+                    throw new RuntimeException("Stock not available");
+                }
+                productEntity.setStock(productEntity.getStock() - product.getQuantity());
                 productRepository.save(productEntity);
+            } else {
+                throw new RuntimeException("Product not found");
             }
         });
-
+    
+        // Procesar cada producto y calcular el precio total
+        purchaseDTO.getProducts().forEach(product -> {
+            Optional<ProductoEntity> p = productRepository.findById(product.getProductId());
+            if (p.isPresent()) {
+                ProductoEntity productEntity = p.get();
+    
+                TransactionDetailsEntity transactionDetails = TransactionDetailsEntity.builder()
+                        .product(productEntity)
+                        .quantity(product.getQuantity())
+                        .unitPrice(productEntity.getPrice())
+                        .build();
+                transactionDetailsRepository.save(transactionDetails);
+                transactionDetailsEntities.add(transactionDetails);
+    
+                totalPrice.updateAndGet(v -> v.add(productEntity.getPrice().multiply(BigDecimal.valueOf(product.getQuantity()))));
+            }
+        });
+    
+        // Aquí puedes aplicar el descuento si es necesario
+        // totalPriceWithDiscount.set(totalPrice.get().subtract(descuento));
+    
         TransactionEntity transaction = TransactionEntity.builder()
                 .buyer(buyer)
                 .date(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)))
-                .discount(0)
-                .saleValue(totalPrice.floatValue())
-                .totalValue(totalPriceWithDiscount.floatValue())
+                .discount(0) // Ajustar esto si hay algún descuento
+                .saleValue(totalPrice.get().floatValue())
+                .totalValue(totalPriceWithDiscount.get().floatValue())
                 .details(transactionDetailsEntities)
                 .build();
-
+    
         transactionRepository.saveAndFlush(transaction);
     }
+    
 }

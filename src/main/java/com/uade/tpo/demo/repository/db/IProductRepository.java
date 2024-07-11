@@ -19,7 +19,6 @@ public interface IProductRepository extends JpaRepository<ProductoEntity, Intege
     List<ProductoEntity> findByPublisherId(User user);
     List<ProductoEntity> findByBrand(String brand);
     List<ProductoEntity> findByCategory(String category);
-    List<ProductoEntity> findByDescription(String description);
     List<ProductoEntity> findByPrice(BigDecimal price);
     List<ProductoEntity> findByNameContaining(String name);
 

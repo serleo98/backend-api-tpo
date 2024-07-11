@@ -80,42 +80,42 @@ public class ProductService implements IProductService {
                     .category(productDTO.getCategory())
                     .name(productDTO.getName())
                     .price(productDTO.getPrice())
-                    .description(productDTO.getDescription())
+                    .size(productDTO.getSize())
+                    .color(productDTO.getColor())
+                    .sex(productDTO.getSex())
+                    .stock(productDTO.getStock())
+                    .image(productDTO.getImage())
                     .build();
-
-            productBuild.addAllStockFromDTO(productDTO.getStock());
-
-            stockRepository.saveAllAndFlush(productBuild.getStock());
 
             productRepository.saveAndFlush(productBuild); //TODO: Guardar stock en base
             return productBuild;
     }
 
-    @Override
-    public void addPhoto(MultipartFile img, Integer productId) throws Exception {
+    // @Override
+    // public void addPhoto(MultipartFile img, Integer productId) throws Exception {
 
-        Optional<ProductoEntity> productdb = productRepository.findById(productId);
-        if (productdb.isEmpty()) {
-            throw new ProductNotFoundException("Product with id: " + productId + " not found");
-        }
-        ProductoEntity product = productdb.get();
-        String url = cloudinaryRepository.savePhoto(img.getName(), img);
-        ImageEntity image = ImageEntity.builder()
-                .url(url)
-                .build();
+    //     Optional<ProductoEntity> productdb = productRepository.findById(productId);
+    //     if (productdb.isEmpty()) {
+    //         throw new ProductNotFoundException("Product with id: " + productId + " not found");
+    //     }
+    //     ProductoEntity product = productdb.get();
+    //     String url = cloudinaryRepository.savePhoto(img.getName(), img);
+    //     ImageEntity image = ImageEntity.builder()
+    //             .url(url)
+    //             .build();
 
-        if(product.getImage() == null){
-            product.setImage(new ArrayList<>());
-        }
+    //     if(product.getImage() == null){
+    //         product.setImage(new ArrayList<>());
+    //     }
 
-        imageEntityRepository.saveAndFlush(image);
-        product.getImage().add(image);
-        productRepository.save(product);
-    }
+    //     imageEntityRepository.saveAndFlush(image);
+    //     product.getImage().add(image);
+    //     productRepository.save(product);
+    // }
 
     @Transactional(rollbackFor = Throwable.class)
     @Override
-    public ProductoEntity modifiProduct(ProductToModifiDTO productToModifiDTO) throws Exception {
+    public ProductoEntity modifyProduct(ProductToModifiDTO productToModifiDTO) throws Exception {
         Optional<ProductoEntity> productdb = productRepository.findById(productToModifiDTO.getId());
 
         User currentUser = AuthUtils.getCurrentAuthUser(User.class);
@@ -146,49 +146,54 @@ public class ProductService implements IProductService {
             productEntity.setPrice(productToModifiDTO.getPrice());
         }
 
-        if (productToModifiDTO.getDescription() != null) {
-            productEntity.setDescription(productToModifiDTO.getDescription());
+        if (productToModifiDTO.getSize() != null) {
+            productEntity.setSize(productToModifiDTO.getSize());
         }
-
-        productToModifiDTO.getStock()
-                .forEach(this::modifiStock);
+        if (productToModifiDTO.getColor() != null) {
+            productEntity.setColor(productToModifiDTO.getColor());
+        }
+        if (productToModifiDTO.getSex() != null) {
+            productEntity.setSex(productToModifiDTO.getSex());
+        }
+        if (productToModifiDTO.getStock() != null) {
+            productEntity.setStock(productToModifiDTO.getStock());
+        }
+        if (productToModifiDTO.getImage() != null) {
+            productEntity.setImage(productToModifiDTO.getImage());
+        }
 
         productRepository.save(productEntity);
 
         return productEntity;
     }
 
-    private void modifiStock(StockAndTypeDto stock) {
-        StockAndType st = stockRepository.getReferenceById(stock.getId());
-        st.setSex(stock.getSex());
-        st.setColor(stock.getColor());
-        st.setType(stock.getType());
-        st.setQuantity(stock.getQuantity());
-        stockRepository.saveAndFlush(st);
-    }
+    // private void modifiStock(StockAndTypeDto stock) {
+    //     StockAndType st = stockRepository.getReferenceById(stock.getId());
+    //     st.setSex(stock.getSex());
+    //     st.setColor(stock.getColor());
+    //     st.setType(stock.getType());
+    //     st.setQuantity(stock.getQuantity());
+    //     stockRepository.saveAndFlush(st);
+    // }
 
     @Override
-    public void purchaseProducts(List<Integer> ids, List<StockAndType> stocks, List<Integer> quantities, Integer buyerId, Integer sellerId, float discount) {
-        if (ids.size() != stocks.size()) {
+    public void purchaseProducts(List<Integer> ids, List<Integer> quantities, Integer buyerId, float discount) {
+        if (ids.size() != quantities.size()) {
             throw new IllegalArgumentException("Products amount does not match with stocks amount");
         }
 
         for (int i = 0; i < ids.size(); i++) {
             Optional<ProductoEntity> productEntity = productRepository.findById(ids.get(i));
             if (!productEntity.isEmpty()) {
-                Optional<StockAndType> stock = stockRepository.findById(stocks.get(i).getId());
-                if (!stock.isEmpty()) {
-                    stock.get().setQuantity(stock.get().getQuantity() - quantities.get(i));
-                } else {
-                    throw new StockNotFoundException("Stock with id: " + stocks.get(i).getId() + " not found");
-                }
+                productEntity.get().setStock(productEntity.get().getStock() - quantities.get(i));
+                productRepository.saveAndFlush(productEntity.get());
             } else {
                 throw new ProductNotFoundException("Product with id: " + ids.get(i) + " not found");
             }
 
         }
         Date currentDate = new Date();
-        transactionService.createTransaction(currentDate, ids, quantities, buyerId, sellerId, discount);
+        // transactionService.createTransaction(currentDate, ids, quantities, buyerId, discount);
 
     }
 
@@ -208,15 +213,7 @@ public class ProductService implements IProductService {
         List<ProductoEntity> productsWithStock = new ArrayList<>();
         List<ProductoEntity> products = productRepository.findAll();
         for (ProductoEntity p : products) {
-            boolean hasStock = false;
-            List<StockAndType> stocks = p.getStock();
-            for (StockAndType s : stocks) {
-                if (s.getQuantity() >= 1) {
-                    hasStock = true;
-                    break;
-                }
-            }
-            if (hasStock == true) {
+            if(p.getStock() != null && p.getStock() > 0){
                 productsWithStock.add(p);
             }
         }

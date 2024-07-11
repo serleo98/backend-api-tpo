@@ -102,7 +102,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public void createTransaction(Date date, List<Integer> productsId, List<Integer> quantities, Integer buyerId, Integer sellerId, float discount) {
+    public void createTransaction(Date date, List<Integer> productsId, List<Integer> quantities, Integer buyerId, float discount) {
         
         // Verificar que las listas de productos y cantidades tengan el mismo tamaño
         if (productsId.size() != quantities.size()) {

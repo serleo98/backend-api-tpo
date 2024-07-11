@@ -70,20 +70,20 @@ public class ProductsController {
         return ResponseEntity.created(URI.create("/products/" + result.getId())).body(result);
     }
 
-    @PostMapping(value = "/addPhoto/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @SecurityRequirement(name = "bearer")
-    public ResponseEntity<ProductoEntity> addPhoto(@RequestPart MultipartFile img, @RequestParam Integer productId) throws Exception {
+    // @PostMapping(value = "/addPhoto/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    // @SecurityRequirement(name = "bearer")
+    // public ResponseEntity<ProductoEntity> addPhoto(@RequestPart MultipartFile img, @RequestParam Integer productId) throws Exception {
 
-         productService.addPhoto(img,productId);
+    //      productService.addPhoto(img,productId);
 
-        return ResponseEntity.ok().build();
-    }
+    //     return ResponseEntity.ok().build();
+    // }
 
     @PutMapping("/modify")
     @SecurityRequirement(name = "bearer")
-    public ResponseEntity modifiProduct(@RequestBody ProductToModifiDTO productToModifiDTO) throws Exception {
+    public ResponseEntity modifyProduct(@RequestBody ProductToModifiDTO productToModifiDTO) throws Exception {
 
-        productService.modifiProduct(productToModifiDTO);
+        productService.modifyProduct(productToModifiDTO);
 
         return ResponseEntity.ok().build();
     }
@@ -110,13 +110,8 @@ public class ProductsController {
     }
 
     @PostMapping("/purchase")
-    public void purchaseProducts(List<Integer> productIds, List<Integer> stockIds, List<Integer> quantities, Integer buyerId, Integer sellerId, float discount) {
-        List<StockAndType> stocks = stockRepository.findAllById(stockIds);
-        if (!stocks.isEmpty()) {
-            productService.purchaseProducts(productIds, stocks, quantities, buyerId, sellerId, discount);
-        } else {
-            throw new StockNotFoundException("Stocks not found");
-        }
+    public void purchaseProducts(List<Integer> productIds, List<Integer> quantities, Integer buyerId, float discount) {
+        productService.purchaseProducts(productIds, quantities, buyerId, discount);
     }
 
 }
