@@ -15,6 +15,8 @@ import com.uade.tpo.demo.entity.StockAndType;
 public interface IProductService {
     Page<ProductoEntity> getProducts(PageRequest pageable);
 
+    List<String> getBrands();
+
     Optional<ProductoEntity> getProductById(Integer productId);
     
     ProductoEntity createProduct(ProductDTO productDTO)

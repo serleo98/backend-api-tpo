@@ -50,6 +50,12 @@ public class ProductService implements IProductService {
         return productRepository.findAll(pageable);
     }
 
+    public List<String> getBrands() {
+        return productRepository.findAll().stream()
+                .map(ProductoEntity::getBrand)
+                .collect(Collectors.toList());
+    }
+
     public Optional<ProductoEntity> getProductById(Integer productId) {
         return productRepository.findById(productId);
     }

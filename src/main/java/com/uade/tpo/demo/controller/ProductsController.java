@@ -32,6 +32,11 @@ public class ProductsController {
     private IStock stockRepository;
 
 
+    @GetMapping("/brands")
+    public ResponseEntity<List<String>> getBrands() {
+        return ResponseEntity.ok(productService.getBrands());
+    }
+
     @GetMapping
     public ResponseEntity<Page<ProductoEntity>> getProducts(
             @RequestParam(required = false) Integer page,
