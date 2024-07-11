@@ -21,6 +21,7 @@ public interface IProductRepository extends JpaRepository<ProductoEntity, Intege
     List<ProductoEntity> findByCategory(String category);
     List<ProductoEntity> findByDescription(String description);
     List<ProductoEntity> findByPrice(BigDecimal price);
+    List<ProductoEntity> findByNameContaining(String name);
 
     Collection<? extends ProductoEntity> findByPriceBetween(BigDecimal minPrice, BigDecimal maxPrice);
 

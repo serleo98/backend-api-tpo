@@ -226,28 +226,34 @@ public class ProductService implements IProductService {
     @Override
     public List<ProductoEntity> getProductsFiltered(String brand, String category, String name, BigDecimal minPrice,
                                                     BigDecimal maxPrice) {
-        Set<ProductoEntity> filtered = new HashSet<>();
+        List<ProductoEntity> filtered = productRepository.findAll();
         if (brand != null) {
-            filtered.addAll(productRepository.findByBrand(brand));
+            List<ProductoEntity> filteredByBrand = productRepository.findByBrand(brand);
+            filtered.retainAll(filteredByBrand);
         }
         if (category != null) {
-            filtered.addAll(productRepository.findByCategory(category));
+            List<ProductoEntity> filteredByCategory = productRepository.findByCategory(category);
+            filtered.retainAll(filteredByCategory);
         }
         if (name != null) {
-            filtered.addAll(productRepository.findByName(name));
+            List<ProductoEntity> filteredByName = productRepository.findByName(name);
+            filtered.retainAll(filteredByName);
         }
         if (minPrice != null && maxPrice != null) {
-            filtered.addAll(productRepository.findByPriceBetween(minPrice, maxPrice));
+            List<ProductoEntity> filteredByMinMax = (List<ProductoEntity>) productRepository.findByPriceBetween(minPrice, maxPrice);
+            filtered.retainAll(filteredByMinMax);
         } else {
             if (minPrice != null) {
-                filtered.addAll(productRepository.findByPriceGreaterThanEqual(minPrice));
+                List<ProductoEntity> filteredByMin = (List<ProductoEntity>) productRepository.findByPriceGreaterThanEqual(minPrice);
+                filtered.retainAll(filteredByMin);
             }
             if (maxPrice != null) {
-                filtered.addAll(productRepository.findByPriceLessThanEqual(maxPrice));
+                List<ProductoEntity> filteredByMax = (List<ProductoEntity>) productRepository.findByPriceLessThanEqual(maxPrice);
+                filtered.retainAll(filteredByMax);
             }
         }
 
-        return new ArrayList<>(filtered);
+        return filtered;
     }
 }
 
