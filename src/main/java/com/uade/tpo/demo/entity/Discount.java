@@ -20,10 +20,14 @@ import java.util.UUID;
 public class Discount implements Serializable {
 
     @Id
+
     @GeneratedValue
     private UUID id;
+
+    @Column(name = "discount_value")
     private BigDecimal value;
-    private Status status = Status.ACTIVE;
+    @Enumerated(EnumType.STRING)
+    private Status status ;
     private Integer amountOfUse;
 
     public boolean isAvailable(){

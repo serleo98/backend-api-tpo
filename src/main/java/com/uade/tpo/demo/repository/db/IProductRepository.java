@@ -3,6 +3,10 @@ package com.uade.tpo.demo.repository.db;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
+
+import com.uade.tpo.demo.entity.Status;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -21,6 +25,8 @@ public interface IProductRepository extends JpaRepository<ProductoEntity, Intege
     List<ProductoEntity> findByCategory(String category);
     List<ProductoEntity> findByPrice(BigDecimal price);
     List<ProductoEntity> findByNameContaining(String name);
+    List<ProductoEntity> findByStatus(Status status);
+    Page<ProductoEntity> findByStatus(Status status, Pageable pageable);
 
     Collection<? extends ProductoEntity> findByPriceBetween(BigDecimal minPrice, BigDecimal maxPrice);
 

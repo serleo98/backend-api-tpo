@@ -56,7 +56,8 @@ public class ProductService implements IProductService {
     private ImageEntityRepository imageEntityRepository;
 
     public Page<ProductoEntity> getProducts(PageRequest pageable) {
-        return productRepository.findAll(pageable);
+
+        return productRepository.findByStatus(Status.ACTIVE, pageable);
     }
 
     @Override
