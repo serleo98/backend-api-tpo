@@ -22,9 +22,9 @@ public class DiscountController {
 
     @PostMapping()
     @SecurityRequirement(name = "bearer")
-    public ResponseEntity login(@RequestPart BigDecimal value,@RequestPart Integer amountOfUse,@RequestPart LocalDateTime expiredAt) {
+    public ResponseEntity login(@RequestParam BigDecimal value,@RequestParam Integer amountOfUse) {
 
-        log.info("Creating discount with value: " + value + " amount of use: " + amountOfUse + " expired at: " + expiredAt);
-        return ResponseEntity.ok(discountService.createDiscount(value, amountOfUse, expiredAt));
+        log.info("Creating discount with value: " + value + " amount of use: " + amountOfUse );
+        return ResponseEntity.ok(discountService.createDiscount(value, amountOfUse));
     }
 }

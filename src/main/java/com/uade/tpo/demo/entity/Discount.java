@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -17,7 +18,7 @@ import java.util.UUID;
 @Table
 @AllArgsConstructor
 @NoArgsConstructor
-public class Discount {
+public class Discount implements Serializable {
 
     @Id
     @GeneratedValue
@@ -25,14 +26,9 @@ public class Discount {
     private BigDecimal value;
     private DiscountStatus status = DiscountStatus.ACTIVE;
     private Integer amountOfUse;
-    private LocalDateTime expiredAt;
-
-    public boolean isExpired(){
-        return expiredAt.isBefore(LocalDateTime.now());
-    }
 
     public boolean isAvailable(){
-        return status.equals(DiscountStatus.ACTIVE) && amountOfUse > 0 && !isExpired();
+        return status.equals(DiscountStatus.ACTIVE) && amountOfUse > 0;
     }
 
     public void inactivate(){

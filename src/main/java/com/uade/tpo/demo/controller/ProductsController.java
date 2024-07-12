@@ -1,7 +1,9 @@
 package com.uade.tpo.demo.controller;
 
+import com.uade.tpo.demo.entity.User;
 import com.uade.tpo.demo.entity.dto.ProductDTO;
 import com.uade.tpo.demo.entity.dto.ProductToModifiDTO;
+import com.uade.tpo.demo.utils.AuthUtils;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -93,10 +95,11 @@ public class ProductsController {
         return productService.getProductsWithStock();
     }
 
-    @GetMapping("/seller/{id}")
+    @GetMapping("/by-seller")
     @SecurityRequirement(name = "bearer")
-    public List<ProductoEntity> getProductsBySellerID(Integer id) {
-        return productService.getProductsBySellerId(id);
+    public List<ProductoEntity> getProductsBySellerID() {
+        User currentUser = AuthUtils.getCurrentAuthUser(User.class);
+        return productService.getProductsBySellerId(currentUser.getId());
     }
 
     @GetMapping("/filtered")

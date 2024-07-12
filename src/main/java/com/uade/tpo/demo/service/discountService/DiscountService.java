@@ -8,5 +8,5 @@ import java.time.LocalDateTime;
 
 public interface DiscountService {
 
-    Discount createDiscount(BigDecimal value,Integer amountOfUse,LocalDateTime expiredAt);
+    Discount createDiscount(BigDecimal value,Integer amountOfUse);
 }

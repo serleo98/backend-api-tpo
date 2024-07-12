@@ -3,6 +3,9 @@ package com.uade.tpo.demo.controller;
 import java.util.Date;
 import java.util.List;
 
+import com.uade.tpo.demo.entity.User;
+import com.uade.tpo.demo.utils.AuthUtils;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,22 +57,28 @@ public class TransactionsController{
         return transactionService.getTransactionById(id);
     }
 
-    @GetMapping("/user/{id}")
-    public List<TransactionDTO> getAllTransactionsByUser(Integer id){
-        List<TransactionDTO> transactions = transactionService.getTransactionsByBuyerId(id);
-        transactions.addAll(transactionService.getTransactionsBySellerId(id));
+    @GetMapping("/user/")
+    @SecurityRequirement(name = "bearer")
+    public List<TransactionDTO> getAllTransactionsByUser(){
+        User currentUser = AuthUtils.getCurrentAuthUser(User.class);
+        List<TransactionDTO> transactions = transactionService.getTransactionsByBuyerId(currentUser.getId());
+        transactions.addAll(transactionService.getTransactionsBySellerId(currentUser.getId()));
         return transactions;
     }
 
-    @GetMapping("/user/sales{id}")
-    public List<TransactionDTO> getSalesByUserId(Integer id){
-        List<TransactionDTO> sales = transactionService.getTransactionsBySellerId(id);
+    @GetMapping("/user/sales/")
+    @SecurityRequirement(name = "bearer")
+    public List<TransactionDTO> getSalesByUserId(){
+        User currentUser = AuthUtils.getCurrentAuthUser(User.class);
+        List<TransactionDTO> sales = transactionService.getTransactionsBySellerId(currentUser.getId());
         return sales;
     } 
 
-    @GetMapping("/user/purchases{id}")
-    public List<TransactionDTO> getPurchasesByUserId(Integer id){
-        List<TransactionDTO> purchases = transactionService.getTransactionsByBuyerId(id);
+    @GetMapping("/user/purchases/")
+    @SecurityRequirement(name = "bearer")
+    public List<TransactionDTO> getPurchasesByUserId(){
+        User currentUser = AuthUtils.getCurrentAuthUser(User.class);
+        List<TransactionDTO> purchases = transactionService.getTransactionsByBuyerId(currentUser.getId());
         return purchases;
     } 
 
