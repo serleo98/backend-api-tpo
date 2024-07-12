@@ -85,8 +85,18 @@ public class TransactionServiceImpl implements TransactionService {
             throw new UserNotFoundException("User with id" + id + "not found");
         }
         List<TransactionEntity> transactionEntity = transactionRepository.findBySeller(seller.get().getId());
+
+        Set<String> uniqueKeys = new HashSet<>();
+        List<TransactionEntity> filteredTransactions = new ArrayList<>();
+
+        for (TransactionEntity transaction : transactionEntity) {
+            String uniqueKey = transaction.getBuyer().getId() + "-" + transaction.getDate().toString() + "-" + transaction.getTotalValue();
+            if (uniqueKeys.add(uniqueKey)) {
+                filteredTransactions.add(transaction);
+            }
+        }
         List<TransactionDTO> transactions = new ArrayList<>();
-        for (TransactionEntity t : transactionEntity) {
+        for (TransactionEntity t : filteredTransactions) {
             TransactionDTO transactionDTO = TransactionDTO.builder()
                     .id(t.getId())
                     .date(t.getDate())

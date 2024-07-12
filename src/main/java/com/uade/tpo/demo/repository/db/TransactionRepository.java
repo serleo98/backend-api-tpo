@@ -15,6 +15,6 @@ public interface TransactionRepository extends JpaRepository<TransactionEntity, 
     Optional<TransactionEntity> findById(Long id);
     List<TransactionEntity> findByBuyer(User buyer);
 
-    @Query("SELECT t FROM TransactionEntity t join ProductoEntity as p  where p.publisherId = ?1")
+    @Query(value = "SELECT t.* FROM transactions t join producto_entity as p  where p.publisher_id_id = ?1", nativeQuery = true)
     List<TransactionEntity> findBySeller(Integer sellerId);
 }
