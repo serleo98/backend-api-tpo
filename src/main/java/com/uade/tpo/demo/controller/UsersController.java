@@ -32,7 +32,7 @@ public class UsersController {
     }
 
     @PostMapping(value = "/sign-in", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity signIn(@RequestPart MultipartFile img, @RequestParam String nick,
+    public ResponseEntity signIn(@RequestPart(required = false) MultipartFile img, @RequestParam String nick,
                                  @RequestParam String name, @RequestParam String email, @RequestParam String password) {
 
         UserDTO body = UserDTO.builder()

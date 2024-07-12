@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -48,7 +49,10 @@ public class UserServiceImpl implements UserService {
 
 
         if (userEntity.isEmpty()) {
-            String url = cloudinaryRepository.savePhoto(img.getName(), img);
+            String url="";
+            if (Objects.isNull(img)) {
+                url = cloudinaryRepository.savePhoto(img.getName(), img);
+            }
 
             NewUserPBDTO newUserIdentity = NewUserPBDTO.builder()
                     .email(newUser.getEmail())
