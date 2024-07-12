@@ -31,8 +31,8 @@ public class UsersController {
         return ResponseEntity.ok(service.login(username, password));
     }
 
-    @PostMapping(value = "/sign-in", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity signIn(@RequestPart(required = false) MultipartFile img, @RequestParam String nick,
+    @PostMapping(value = "/sign-in")
+    public ResponseEntity signIn(@RequestParam String nick,
                                  @RequestParam String name, @RequestParam String email, @RequestParam String password) {
 
         UserDTO body = UserDTO.builder()
@@ -43,7 +43,7 @@ public class UsersController {
                 .password(password)
                 .build();
 
-        service.createUser(body, img);
+        service.createUser(body, null);
 
         return ResponseEntity.status(HttpStatus.SC_CREATED).build();
     }
