@@ -36,9 +36,9 @@ public class SecurityConfig {
                         req -> req
 
                                 //USER
-                                .requestMatchers("/login").permitAll()
-                                .requestMatchers("/sign-in").permitAll()
-                                .requestMatchers("/refresh").hasAuthority("USER")
+                                .requestMatchers("/user/login").permitAll()
+                                .requestMatchers("/user/sign-in").permitAll()
+                                .requestMatchers("/user/refresh").hasAuthority("USER")
 
                                 //PRODUCTS
                                 .requestMatchers(HttpMethod.POST,"/products/**").hasAuthority("USER")
@@ -54,6 +54,7 @@ public class SecurityConfig {
                                 .requestMatchers("/v3/api-docs/**").permitAll()
                                 .requestMatchers("/ping").permitAll()
                                 .anyRequest().authenticated())
+
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
