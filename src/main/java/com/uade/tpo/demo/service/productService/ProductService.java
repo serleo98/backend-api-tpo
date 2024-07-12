@@ -17,6 +17,8 @@ import com.uade.tpo.demo.entity.dto.StockAndTypeDto;
 import com.uade.tpo.demo.repository.cloudinary.CloudinaryRepository;
 import com.uade.tpo.demo.repository.db.ImageEntityRepository;
 import com.uade.tpo.demo.utils.AuthUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,6 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class ProductService implements IProductService {
 
+    private static final Logger log = LoggerFactory.getLogger(ProductService.class);
     @Autowired
     private IStock stockRepository;
 
@@ -97,6 +100,7 @@ public class ProductService implements IProductService {
                     .image(productDTO.getImage())
                     .build();
 
+            log.info("Product created: " + productBuild.toString());
             productRepository.saveAndFlush(productBuild); //TODO: Guardar stock en base
             return productBuild;
     }
