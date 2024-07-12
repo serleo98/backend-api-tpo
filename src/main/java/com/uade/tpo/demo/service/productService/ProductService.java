@@ -93,6 +93,7 @@ public class ProductService implements IProductService {
                     .color(productDTO.getColor())
                     .sex(productDTO.getSex())
                     .stock(productDTO.getStock())
+                    .status(Status.ACTIVE)
                     .image(productDTO.getImage())
                     .build();
 
