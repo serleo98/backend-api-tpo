@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
 
         if (userEntity.isEmpty()) {
             String url="";
-            if (Objects.isNull(img)) {
+            if (Objects.nonNull(img)) {
                 url = cloudinaryRepository.savePhoto(img.getName(), img);
             }
 
