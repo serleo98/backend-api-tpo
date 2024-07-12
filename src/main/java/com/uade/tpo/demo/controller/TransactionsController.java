@@ -86,6 +86,7 @@ public class TransactionsController{
         return purchases;
     } 
 
+    @Deprecated
     @PostMapping("/create/transaction")
     @SecurityRequirement(name = "bearer")
     public void createTransaction(Date date, List<Integer> productsId, List<Integer> quantities, Integer buyerId, float discount){
