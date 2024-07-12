@@ -41,6 +41,7 @@ public class SecurityConfig {
                                 .requestMatchers("/user/refresh").hasAuthority("USER")
                                 .requestMatchers("/discount").hasAuthority("USER")
 
+                                .requestMatchers("/imagen/**").permitAll()
                                 //PRODUCTS
                                 .requestMatchers(HttpMethod.POST,"/products/**").hasAuthority("USER")
                                 .requestMatchers(HttpMethod.PUT,"/products/**").hasAuthority("USER")
