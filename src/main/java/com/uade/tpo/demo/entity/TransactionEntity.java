@@ -34,39 +34,12 @@ public class TransactionEntity {
     private User buyer;
 
     private float saleValue;
-    private float discount;
+    @ManyToOne
+    private Discount discount;
     private float totalValue;
 
     @OneToMany
     @JoinColumn(referencedColumnName = "id")
     private List<TransactionDetailsEntity> details;
-
-    public Long getId(){
-        return id;
-    }
-
-    public Date getDate(){
-        return date;
-    }
-
-    public User getBuyer() {
-        return buyer;
-    }
-
-    public List<TransactionDetailsEntity> getDetails() {
-        return details;
-    }
-
-    public float getSaleValue(){
-        return saleValue;
-    }
-
-    public float getDiscount(){
-        return discount;
-    }
-
-    public float getTotalValue(){
-        return totalValue;
-    }
 
 }

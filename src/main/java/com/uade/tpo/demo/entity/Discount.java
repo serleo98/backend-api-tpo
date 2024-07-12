@@ -23,8 +23,20 @@ public class Discount {
     @GeneratedValue
     private UUID id;
     private BigDecimal value;
-    private DiscountStatus status;
+    private DiscountStatus status = DiscountStatus.ACTIVE;
     private Integer amountOfUse;
     private LocalDateTime expiredAt;
+
+    public boolean isExpired(){
+        return expiredAt.isBefore(LocalDateTime.now());
+    }
+
+    public boolean isAvailable(){
+        return status.equals(DiscountStatus.ACTIVE) && amountOfUse > 0 && !isExpired();
+    }
+
+    public void inactivate(){
+        status = DiscountStatus.INACTIVE;
+    }
 
 }

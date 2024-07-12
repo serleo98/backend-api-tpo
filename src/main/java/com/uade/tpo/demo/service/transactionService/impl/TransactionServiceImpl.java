@@ -44,7 +44,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .date(transactionEntity.get().getDate())
                 .buyerId(transactionEntity.get().getBuyer())
                 .saleValue(transactionEntity.get().getSaleValue())
-                .discount(transactionEntity.get().getDiscount())
+                .discount(transactionEntity.get().getDiscount().getValue().floatValue())
                 .totalValue(transactionEntity.get().getTotalValue())
                 .details(transactionEntity.get().getDetails())
                 .build();
@@ -69,7 +69,7 @@ public class TransactionServiceImpl implements TransactionService {
             .date(t.getDate())
             .buyerId(t.getBuyer())
             .saleValue(t.getSaleValue())
-            .discount(t.getDiscount())
+            .discount(t.getDiscount().getValue().floatValue())
             .totalValue(t.getTotalValue())
             .details(t.getDetails())
             .build();
@@ -92,7 +92,7 @@ public class TransactionServiceImpl implements TransactionService {
             .date(t.getDate())
             .buyerId(t.getBuyer())
             .saleValue(t.getSaleValue())
-            .discount(t.getDiscount())
+            .discount(t.getDiscount().getValue().floatValue())
             .totalValue(t.getTotalValue())
             .details(t.getDetails())
             .build();
@@ -116,7 +116,7 @@ public class TransactionServiceImpl implements TransactionService {
         TransactionEntity transactionEntity = TransactionEntity.builder()
             .date(date)
             .buyer(buyer)
-            .discount(discount)
+            //.discount()
             .build();
 
 

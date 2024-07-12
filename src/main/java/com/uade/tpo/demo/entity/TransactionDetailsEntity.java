@@ -29,5 +29,4 @@ public class TransactionDetailsEntity {
     private BigDecimal unitPrice;
     private Integer quantity;
 
-
 }
