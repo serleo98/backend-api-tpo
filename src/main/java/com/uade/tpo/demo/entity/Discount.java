@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Builder
@@ -24,15 +23,15 @@ public class Discount implements Serializable {
     @GeneratedValue
     private UUID id;
     private BigDecimal value;
-    private DiscountStatus status = DiscountStatus.ACTIVE;
+    private Status status = Status.ACTIVE;
     private Integer amountOfUse;
 
     public boolean isAvailable(){
-        return status.equals(DiscountStatus.ACTIVE) && amountOfUse > 0;
+        return status.equals(Status.ACTIVE) && amountOfUse > 0;
     }
 
     public void inactivate(){
-        status = DiscountStatus.INACTIVE;
+        status = Status.INACTIVE;
     }
 
 }

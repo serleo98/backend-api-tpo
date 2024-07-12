@@ -102,6 +102,12 @@ public class ProductsController {
         return productService.getProductsBySellerId(currentUser.getId());
     }
 
+    @PutMapping("/{productId}/inactivate")
+    @SecurityRequirement(name = "bearer")
+    public void inactivateProduct(@PathVariable Integer productId) {
+        productService.inactivateProduct(productId);
+    }
+
     @GetMapping("/filtered")
     public List<ProductoEntity> getProductsFiltered(
             @RequestParam(required = false) String brand,

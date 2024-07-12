@@ -16,6 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 public interface IProductService {
     Page<ProductoEntity> getProducts(PageRequest pageable);
 
+    void inactivateProduct(Integer productId);
+
     List<String> getBrands();
 
     Optional<ProductoEntity> getProductById(Integer productId);

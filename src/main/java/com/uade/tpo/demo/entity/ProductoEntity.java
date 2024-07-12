@@ -44,6 +44,7 @@ public class ProductoEntity implements Serializable {
     private Integer stock;
     @Column
     private String image;
+    private Status status;
 
 
 }

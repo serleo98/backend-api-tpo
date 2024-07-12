@@ -89,14 +89,25 @@ public class PurchaseServiceImpl implements PurchaseService {
             totalPriceWithDiscount.set(totalPrice.get());
         }
 
-        TransactionEntity transaction = TransactionEntity.builder()
-                .buyer(buyer)
-                .date(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)))
-                .discount(discount) // Ajustar esto si hay algún descuento
-                .saleValue(totalPrice.get().floatValue())
-                .totalValue(totalPriceWithDiscount.get().floatValue())
-                .details(transactionDetailsEntities)
-                .build();
+        TransactionEntity transaction;
+        if(discount != null) {
+            transaction= TransactionEntity.builder()
+                    .buyer(buyer)
+                    .date(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)))
+                    .discount(discount) // Ajustar esto si hay algún descuento
+                    .saleValue(totalPrice.get().floatValue())
+                    .totalValue(totalPriceWithDiscount.get().floatValue())
+                    .details(transactionDetailsEntities)
+                    .build();
+        } else {
+            transaction = TransactionEntity.builder()
+                    .buyer(buyer)
+                    .date(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)))
+                    .saleValue(totalPrice.get().floatValue())
+                    .totalValue(totalPriceWithDiscount.get().floatValue())
+                    .details(transactionDetailsEntities)
+                    .build();
+        }
 
         transactionRepository.saveAndFlush(transaction);
     }

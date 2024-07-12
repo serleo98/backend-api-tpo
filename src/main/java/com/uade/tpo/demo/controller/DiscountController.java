@@ -1,6 +1,5 @@
 package com.uade.tpo.demo.controller;
 
-import com.uade.tpo.demo.entity.DiscountStatus;
 import com.uade.tpo.demo.service.discountService.DiscountService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
@@ -9,8 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Slf4j
 @RestController

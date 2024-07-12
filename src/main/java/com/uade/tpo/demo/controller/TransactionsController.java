@@ -38,21 +38,25 @@ public class TransactionsController{
     private TransactionDetailsService transactionDetailsService;
     
     @GetMapping("/detail{id}")
+    @SecurityRequirement(name = "bearer")
     public TransactionDetailsDTO getDetailById(Long id){
         return transactionDetailsService.getDetailById(id);
     }
 
     @GetMapping("/product/{id}")
+    @SecurityRequirement(name = "bearer")
     public  List<TransactionDetailsDTO> getDetailsByProductId(int id){
         return transactionDetailsService.getDetailsByProductId(id);
     }
 
     @GetMapping("/details/{id}")
+    @SecurityRequirement(name = "bearer")
     public List<TransactionDetailsDTO> getDetailsByTransactionId(Long id){
         return transactionDetailsService.getDetailsByTransactionId(id);
     }
 
     @GetMapping("/{id}")
+    @SecurityRequirement(name = "bearer")
     public TransactionDTO getTransactionById(Long id){
         return transactionService.getTransactionById(id);
     }
@@ -83,16 +87,19 @@ public class TransactionsController{
     } 
 
     @PostMapping("/create/transaction")
+    @SecurityRequirement(name = "bearer")
     public void createTransaction(Date date, List<Integer> productsId, List<Integer> quantities, Integer buyerId, float discount){
         transactionService.createTransaction(date, productsId, quantities, buyerId, discount);
     }
 
     @GetMapping("/all")
+    @SecurityRequirement(name = "bearer")
     public List<TransactionEntity> getAllTransactions(){
         return transactionRepository.findAll();
     }
 
     @GetMapping("/details")
+    @SecurityRequirement(name = "bearer")
     public List<TransactionDetailsEntity> getAllDetails(){
         return transactionDetailsRepository.findAll();
     }

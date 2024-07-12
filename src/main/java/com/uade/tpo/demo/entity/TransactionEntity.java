@@ -1,11 +1,6 @@
 package com.uade.tpo.demo.entity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Null;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -34,8 +29,10 @@ public class TransactionEntity {
     private User buyer;
 
     private float saleValue;
-    @ManyToOne
-    private Discount discount;
+
+    @ManyToOne(optional = true)
+    @JoinColumn(referencedColumnName = "id")
+    private Discount discount ;
     private float totalValue;
 
     @OneToMany

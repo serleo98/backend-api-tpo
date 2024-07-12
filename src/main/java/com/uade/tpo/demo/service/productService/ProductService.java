@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 
+import com.uade.tpo.demo.entity.*;
 import com.uade.tpo.demo.entity.dto.ProductDTO;
 import com.uade.tpo.demo.entity.dto.ProductToModifiDTO;
 import com.uade.tpo.demo.entity.dto.StockAndTypeDto;
@@ -21,10 +22,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.uade.tpo.demo.entity.ImageEntity;
-import com.uade.tpo.demo.entity.ProductoEntity;
-import com.uade.tpo.demo.entity.StockAndType;
-import com.uade.tpo.demo.entity.User;
 import com.uade.tpo.demo.repository.db.IProductRepository;
 import com.uade.tpo.demo.repository.db.IStock;
 import com.uade.tpo.demo.repository.db.UserRepository;
@@ -59,8 +56,20 @@ public class ProductService implements IProductService {
         return productRepository.findAll(pageable);
     }
 
+    @Override
+    public void inactivateProduct(Integer productId) {
+        Optional<ProductoEntity> productdb = productRepository.findById(productId);
+        if (productdb.isEmpty()) {
+            throw new ProductNotFoundException("Product with id: " + productId + " not found");
+        }
+        ProductoEntity product = productdb.get();
+        product.setStatus(Status.INACTIVE);
+        productRepository.save(product);
+    }
+
     public List<String> getBrands() {
         return productRepository.findAll().stream()
+                .filter(productoEntity -> productoEntity.getStatus().equals(Status.ACTIVE))
                 .map(ProductoEntity::getBrand)
                 .collect(Collectors.toList());
     }
@@ -201,7 +210,7 @@ public class ProductService implements IProductService {
     public List<ProductoEntity> getProductsBySellerId(Integer userId) {
         Optional<User> user = userRepository.findById(userId);
         if (!user.isEmpty()) {
-            return productRepository.findByPublisherId(user.get());
+            return productRepository.findByPublisherId(user.get()).stream().filter(productoEntity -> productoEntity.getStatus().equals(Status.ACTIVE)).toList();
         } else {
             throw new UserNotFoundException("Seller with id: " + userId + " not found");
         }
@@ -211,7 +220,7 @@ public class ProductService implements IProductService {
     @Override
     public List<ProductoEntity> getProductsWithStock() {
         List<ProductoEntity> productsWithStock = new ArrayList<>();
-        List<ProductoEntity> products = productRepository.findAll();
+        List<ProductoEntity> products = productRepository.findAll().stream().filter(productoEntity -> productoEntity.getStatus().equals(Status.ACTIVE)).toList();
         for (ProductoEntity p : products) {
             if(p.getStock() != null && p.getStock() > 0){
                 productsWithStock.add(p);
@@ -223,7 +232,7 @@ public class ProductService implements IProductService {
     @Override
     public List<ProductoEntity> getProductsFiltered(String brand, String category, String name, BigDecimal minPrice,
                                                     BigDecimal maxPrice) {
-        List<ProductoEntity> filtered = productRepository.findAll();
+        List<ProductoEntity> filtered = productRepository.findAll().stream().filter(productoEntity -> productoEntity.getStatus().equals(Status.ACTIVE)).toList();
         if (brand != null) {
             List<ProductoEntity> filteredByBrand = productRepository.findByBrand(brand);
             filtered.retainAll(filteredByBrand);

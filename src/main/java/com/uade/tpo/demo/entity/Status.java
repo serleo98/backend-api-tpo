@@ -1,6 +1,6 @@
 package com.uade.tpo.demo.entity;
 
-public enum DiscountStatus {
+public enum Status {
     ACTIVE,
     INACTIVE,
     EXPIRED,
